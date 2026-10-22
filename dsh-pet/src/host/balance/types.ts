@@ -58,7 +58,11 @@ export interface BalanceProvider {
  * 加一个服务商只要落到这两种形态之一，src/shared 与两端展示层就完全不用动。
  */
 export type BalanceShape = 'windows' | 'money' | 'quota';
-export interface QuotaUsage { windows: Array<{ label: string; usedPercent: number; windowMinutes: number; resetsAt?: string }>; plan?: string; updatedAt: string; }
+export interface QuotaUsage {
+  windows: Array<{ label: string; usedPercent: number; windowMinutes: number; resetsAt?: string }>;
+  plan?: string;
+  updatedAt: string;
+}
 
 /** 计价档位装饰（气泡上的「峰/谷」）：由服务商按自己的计价规则算好后随数据带出 */
 export type PricingTier = 'peak' | 'idle';

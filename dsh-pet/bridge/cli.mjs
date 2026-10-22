@@ -1,5 +1,4 @@
 import { postEvent, status, shutdownBridge } from './client.mjs';
-import { base } from './runtime.mjs';
 try {
   const c = process.argv[2] || 'status';
   let result;

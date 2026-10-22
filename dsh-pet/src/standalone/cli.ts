@@ -52,7 +52,12 @@ async function run(logger: StandaloneLogger, options: { port: number }): Promise
 
   const routes: RegisteredRoute[] = [];
   const portRef = { value: options.port };
-  const context = createStandaloneContext({ port: () => portRef.value, logger, routes, ...(process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt' ? { host: new CodexPetHost() } : {}) });
+  const context = createStandaloneContext({
+    port: () => portRef.value,
+    logger,
+    routes,
+    ...(process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt' ? { host: new CodexPetHost() } : {}),
+  });
   // /shutdown 的回调要在服务构造时给出去，而停机函数要在服务之后定义：
   // 用一个可替换的转发器解耦（服务构造时只拿到"将来会是谁"）。
   let forwardShutdown: () => void = () => {};
@@ -116,7 +121,9 @@ async function run(logger: StandaloneLogger, options: { port: number }): Promise
     desktopVisible.length === 0
       ? '  桌面小窗    0 只：display 需要 desktop 或 both 才会出现透明小窗（服务仍在运行）'
       : `  桌面小窗    ${desktopVisible.length} 只`,
-    process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt' ? '  宿主连接    ChatGPT / Codex：桌宠对话、碎碎念、套餐用量（复用已登录账号）' : '  不可用      余额 / 碎碎念 / 对话 / 系统通知（依赖 DSH 的凭证、模型与会话）',
+    process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt'
+      ? '  宿主连接    ChatGPT / Codex：桌宠对话、碎碎念、套餐用量（复用已登录账号）'
+      : '  不可用      余额 / 碎碎念 / 对话 / 系统通知（依赖 DSH 的凭证、模型与会话）',
     '  退出        Ctrl+C，或 POST /shutdown',
     '',
   ]) {

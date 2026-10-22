@@ -32,4 +32,21 @@ class FrameInputTests(unittest.TestCase):
         self.assertEqual(feed.frame.getpixel((479,0)),(255,0,0))
         with self.assertRaises(ValueError):feed.update({'enabled':'false'},480,480,90,1)
 
+    def test_coalesced_off_on_still_requests_reconnect(self):
+        feed=FrameInput()
+        feed.update({'enabled':True,'png':png(),'generation':1,'streamId':'dsh:a'},480,480,90,0)
+        # Queue drops intermediate off; the later generation must still release the SDK.
+        self.assertTrue(feed.update({'enabled':True,'png':png(),'generation':3,'streamId':'dsh:a'},480,480,90,1))
+        self.assertTrue(feed.active(1))
+        self.assertFalse(feed.update({'enabled':True,'generation':3,'streamId':'dsh:a'},480,480,90,2))
+
+    def test_handoff_cannot_reuse_another_pets_frame(self):
+        feed=FrameInput()
+        feed.update({'enabled':True,'png':png(),'streamId':'dsh:a'},480,480,90,0)
+        self.assertTrue(feed.update({'enabled':True,'streamId':'dsh:b'},480,480,90,1))
+        self.assertIsNone(feed.frame)
+        self.assertFalse(feed.active(1))
+        feed.update({'enabled':True,'png':png(),'streamId':'dsh:b'},480,480,180,2)
+        self.assertEqual(feed.frame.getpixel((479,479)),(255,0,0))
+
 if __name__=='__main__':unittest.main()

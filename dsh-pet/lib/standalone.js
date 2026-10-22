@@ -238,8 +238,8 @@ var CodexPetHost = class {
 			await rpc.initialize();
 			signal?.throwIfAborted();
 			const config = await rpc.request("config/read", { includeLayers: false });
-			const overrides = {};
-			for (const key of Object.keys(obj$1(config.config.mcp_servers))) overrides["mcp_servers." + key + ".enabled"] = false;
+			const overrides$1 = {};
+			for (const key of Object.keys(obj$1(config.config.mcp_servers))) overrides$1["mcp_servers." + key + ".enabled"] = false;
 			const system = typeof options.system === "string" ? options.system : "";
 			const thread = await rpc.request("thread/start", {
 				ephemeral: true,
@@ -248,7 +248,7 @@ var CodexPetHost = class {
 				modelProvider: "openai",
 				sandbox: "read-only",
 				approvalPolicy: "never",
-				config: overrides,
+				config: overrides$1,
 				baseInstructions: system,
 				developerInstructions: "你只负责桌宠闲聊，回复简短自然。仅使用传入的桌宠对话记录；不访问文件、工具、网页或其他会话，不执行任务。"
 			});
@@ -266,7 +266,8 @@ var CodexPetHost = class {
 					clearTimeout(timer);
 					signal?.removeEventListener("abort", abort);
 					rpc?.listeners.delete(listener);
-					error ? reject(error) : resolve$1(value);
+					if (error) reject(error);
+					else resolve$1(value);
 				};
 				const abort = () => {
 					done(Error("生成已取消"));
@@ -1985,12 +1986,18 @@ var peerDependencies = {
 	"react-dom": "^18.2.0"
 };
 var devDependencies = {
+	"@deepseek-ai/cordis": "^4.0.5",
+	"@deepseek-ai/dsh-client-ui-primitives": "^0.2.0-rc.2",
+	"@deepseek-ai/dsh-credentials": "^0.2.0-rc.2",
+	"@deepseek-ai/dsh-home-paths": "^0.2.0-rc.2",
+	"@deepseek-ai/dsh-llm": "^0.2.0-rc.2",
 	"@eslint/js": "^10.0.1",
 	"@types/node": "^26.2.0",
 	"@types/react": "^18.2.0",
 	"@types/react-dom": "^18.2.0",
 	"eslint": "^10.9.0",
 	"eslint-plugin-react-hooks": "^7.1.1",
+	"globals": "^17.13.0",
 	"js-yaml": "^5.4.2",
 	"playwright": "1.63.0",
 	"prettier": "^3.9.6",
@@ -2001,6 +2008,7 @@ var devDependencies = {
 	"typescript": "^5.5.0",
 	"typescript-eslint": "^8.67.0"
 };
+var overrides = { "@keyv/serialize": "1.1.1" };
 var package_default = {
 	name,
 	version,
@@ -2021,7 +2029,8 @@ var package_default = {
 	dependencies,
 	dsh,
 	peerDependencies,
-	devDependencies
+	devDependencies,
+	overrides
 };
 
 //#endregion

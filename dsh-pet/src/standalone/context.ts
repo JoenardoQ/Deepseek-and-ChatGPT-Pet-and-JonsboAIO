@@ -184,7 +184,7 @@ export function createStandaloneContext(options: StandaloneContextOptions): Stan
 
   if (options.host) {
     const host = options.host;
-    context.get = (name: string) => name === 'petHost' ? host : undefined;
+    context.get = (name: string) => (name === 'petHost' ? host : undefined);
     context.agentDefaultModel = { currentSelection: () => ({ provider: host.provider, model: 'host-default' }) };
     context.llm = {
       listProviders: () => [{ id: host.provider, name: 'ChatGPT / Codex 已登录宿主' }],

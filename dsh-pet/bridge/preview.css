@@ -1,0 +1,287 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+  color: #e7e9f5;
+  background: #101119;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: radial-gradient(ellipse at 15% 5%, #30274280, transparent 55%);
+  min-height: 100vh;
+}
+main {
+  max-width: 1040px;
+  margin: auto;
+  padding: 44px 24px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-size: 28px;
+  letter-spacing: 0.03em;
+  margin: 6px 0;
+}
+h2 {
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+p {
+  line-height: 1.65;
+}
+small,
+.muted {
+  color: #9da1b6;
+  font-size: 13px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: #b8a3ed;
+}
+.badge {
+  border: 1px solid #41404f;
+  border-radius: 30px;
+  padding: 8px 14px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.badge.good {
+  color: #8fe0bd;
+  border-color: #386d59;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 22px;
+}
+.panel {
+  border: 1px solid #2e2f3e;
+  border-radius: 22px;
+  background: #1b1c27;
+  padding: 24px;
+}
+.preview {
+  background: #111722;
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  aspect-ratio: 1;
+}
+.preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+.empty {
+  height: 100%;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  padding: 30px;
+  color: #9da1b6;
+}
+.stack {
+  display: grid;
+  gap: 18px;
+}
+.sources {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+button,
+select {
+  font: inherit;
+  font-size: 14px;
+  border: 1px solid #444353;
+  border-radius: 12px;
+  background: #282936;
+  color: #eee;
+  cursor: pointer;
+  padding: 12px 16px;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+button:hover:enabled {
+  background: #373447;
+  border-color: #ad91df;
+}
+button:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid #c6a7ff;
+  outline-offset: 3px;
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.source {
+  text-align: left;
+  padding: 14px;
+}
+.source strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.source span {
+  color: #aaaabe;
+  font-size: 12px;
+}
+.source[aria-pressed='true'] {
+  background: #342b48;
+  border-color: #b292e4;
+}
+.primary {
+  background: #bca0e8;
+  color: #191222;
+  border-color: #bca0e8;
+  font-weight: 600;
+}
+.primary:hover:enabled {
+  background: #d1b9f5;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.actions button {
+  flex: 1;
+}
+.takeover {
+  width: 100%;
+  margin-top: 10px;
+  background: #493b2a;
+  border-color: #896b43;
+  color: #ffdc9b;
+}
+.notice {
+  font-size: 13px;
+  color: #bbb9cd;
+  margin: 14px 0 0;
+  min-height: 42px;
+}
+select {
+  width: 100%;
+}
+#result {
+  margin: 18px 0 0;
+  min-height: 24px;
+  font-size: 14px;
+  color: #cfb7f4;
+}
+details {
+  margin-top: 22px;
+  color: #989bb0;
+  font-size: 12px;
+}
+summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+pre {
+  max-height: 220px;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #14151e;
+  border-radius: 12px;
+  padding: 16px;
+}
+footer {
+  margin-top: 20px;
+  color: #777c93;
+  font-size: 12px;
+}
+[hidden] {
+  display: none !important;
+}
+@media (max-width: 730px) {
+  main {
+    padding: 24px 16px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .preview {
+    max-height: 420px;
+  }
+  header {
+    align-items: flex-start;
+  }
+  h1 {
+    font-size: 23px;
+  }
+}
+.backgrounds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.backgrounds button {
+  padding: 8px;
+  text-align: left;
+  font-size: 12px;
+}
+.backgrounds img {
+  width: 100%;
+  height: 78px;
+  object-fit: cover;
+  border-radius: 7px;
+  display: block;
+  margin-bottom: 7px;
+}
+.backgrounds [aria-pressed='true'] {
+  border-color: #c6a7ff;
+  background: #342b48;
+}
+.backgrounds button:first-child {
+  grid-column: 1/-1;
+}
+
+.source {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.customize {
+  margin: 0;
+}
+.customize summary {
+  font-size: 16px;
+  color: #e7e9f5;
+}
+.customize select {
+  margin: 10px 0 20px;
+}
+header {
+  flex-wrap: wrap;
+}
+#sources:empty::after {
+  content: '暂无在线桌宠';
+}
+.source span {
+  display: block;
+}
+.preview {
+  align-self: start;
+  position: sticky;
+  top: 24px;
+}
+@media (max-width: 730px) {
+  .preview {
+    position: static;
+  }
+}

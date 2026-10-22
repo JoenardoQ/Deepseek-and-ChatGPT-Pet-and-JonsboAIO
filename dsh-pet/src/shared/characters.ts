@@ -143,21 +143,44 @@ export async function saveCharacter(base: string, petId: string, id: CharacterId
 }
 
 export const PRINCESS_ACTIONS = princessActions;
-const PRINCESS_CORE: Record<string,string> = {idle:'待机呼吸休闲',blink:'blink',thinking:'深度思考碎碎念',working:'写代码',success:'工作状态-雀跃庆祝',error:'工作状态-垂头叹气冒汗',sleeping:'原地小憩沉眠',wave:'点击回应-元气挥手'};
-function princessAction(name:string) {
-  const id=name.startsWith('__princess-')?name.slice(2):name;
-  return PRINCESS_ACTIONS.find(a=>a.id===id||a.sourceAnimation===name)
-    || PRINCESS_ACTIONS.find(a=>a.sourceAnimation===PRINCESS_CORE[characterState(name)]);
+const PRINCESS_CORE: Record<string, string> = {
+  idle: '待机呼吸休闲',
+  blink: 'blink',
+  thinking: '深度思考碎碎念',
+  working: '写代码',
+  success: '工作状态-雀跃庆祝',
+  error: '工作状态-垂头叹气冒汗',
+  sleeping: '原地小憩沉眠',
+  wave: '点击回应-元气挥手',
+};
+function princessAction(name: string) {
+  const id = name.startsWith('__princess-') ? name.slice(2) : name;
+  return (
+    PRINCESS_ACTIONS.find((a) => a.id === id || a.sourceAnimation === name) ||
+    PRINCESS_ACTIONS.find((a) => a.sourceAnimation === PRINCESS_CORE[characterState(name)])
+  );
 }
-export function characterActionLabel(id:CharacterId,name:string):string {
-  if(name.startsWith('__duet-'))return '双人互动 · '+(DUET_ACTIONS.find(([key])=>key===name.slice(7))?.[1]||name);
-  return id==='chatgpt'?princessAction(name)?.label||name:name;
+export function characterActionLabel(id: CharacterId, name: string): string {
+  if (name.startsWith('__duet-'))
+    return '双人互动 · ' + (DUET_ACTIONS.find(([key]) => key === name.slice(7))?.[1] || name);
+  return id === 'chatgpt' ? princessAction(name)?.label || name : name;
 }
 
 export function characterActionMenu(id: CharacterId, animations: Animations): MenuNode[] {
-  if(id==='chatgpt'&&PRINCESS_ACTIONS.length){
-    const categories=[...new Set(PRINCESS_ACTIONS.map(a=>a.category))];
-    return [{label:'龙公主的动作 · '+PRINCESS_ACTIONS.length,children:categories.map(category=>({label:category,children:PRINCESS_ACTIONS.filter(a=>a.category===category).map(a=>({label:a.label,anim:'__'+a.id}))}))}];
+  if (id === 'chatgpt' && PRINCESS_ACTIONS.length) {
+    const categories = [...new Set(PRINCESS_ACTIONS.map((a) => a.category))];
+    return [
+      {
+        label: '龙公主的动作 · ' + PRINCESS_ACTIONS.length,
+        children: categories.map((category) => ({
+          label: category,
+          children: PRINCESS_ACTIONS.filter((a) => a.category === category).map((a) => ({
+            label: a.label,
+            anim: '__' + a.id,
+          })),
+        })),
+      },
+    ];
   }
   if (id === 'fish') return buildMenuTree(animations);
   const states = [
@@ -186,8 +209,13 @@ export function characterMedia(
   extension = '.webm',
 ): { path: string; kind: 'gif' | 'video' } {
   const scene = name.startsWith('__duet-') ? name.slice(7) : '';
-  if (DUET_ACTIONS.some(([id]) => id === scene)) return { path: versionedAsset('/thumb/@duo/' + scene + '.gif'), kind: 'gif' };
-  if (character === 'chatgpt') return { path: versionedAsset('/thumb/@chatgpt/' + (princessAction(name)?.id || characterState(name)) + '.gif'), kind: 'gif' };
+  if (DUET_ACTIONS.some(([id]) => id === scene))
+    return { path: versionedAsset('/thumb/@duo/' + scene + '.gif'), kind: 'gif' };
+  if (character === 'chatgpt')
+    return {
+      path: versionedAsset('/thumb/@chatgpt/' + (princessAction(name)?.id || characterState(name)) + '.gif'),
+      kind: 'gif',
+    };
   if (character === 'whale')
     return { path: '/thumb/@whale/' + characterAnimation(character, name) + '.webm', kind: 'video' };
   return {

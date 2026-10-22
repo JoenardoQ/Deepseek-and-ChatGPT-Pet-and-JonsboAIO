@@ -31,6 +31,7 @@ export interface ChatDialogMount {
  *  约束到该矩形内即可完整显示，**窗口/宠物零移动零闪帧**。 */
 export declare function mountChatDialog(opts: {
     petId: string;
+    petName?: string;
     /** 端点基址：浏览器默认相对 /dsh-pet-7340/chat；桌面传绝对 URL（file:// 页面需绝对） */
     baseUrl?: string;
     x: number;

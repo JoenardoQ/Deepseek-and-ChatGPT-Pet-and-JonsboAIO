@@ -29,7 +29,11 @@ const config = await (await fetch(`http://127.0.0.1:${new URL(base).port * 1 + 1
 const pool = [config.main.animations.events.workStatus[1]].flat();
 let working;
 // User interaction and upstream one-shot actions may finish before resuming work.
-for(let i=0;i<40;i++){await pause(250);working=await status();if(pool.includes(working.animation))break;}
+for (let i = 0; i < 40; i++) {
+  await pause(250);
+  working = await status();
+  if (pool.includes(working.animation)) break;
+}
 assert.ok(pool.includes(working.animation), 'Expected an upstream working animation; got ' + working.animation);
 writeFileSync(path.join(out, 'working.png'), Buffer.from(await (await fetch(base + '/frame.png')).arrayBuffer()));
 await postEvent({ action: 'update', source: 'chatgpt', state: 'idle', message: '' });

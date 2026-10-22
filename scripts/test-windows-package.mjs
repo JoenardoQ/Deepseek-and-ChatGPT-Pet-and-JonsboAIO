@@ -41,10 +41,10 @@ try{
  invoke('wake');
  const state=await fetch('http://127.0.0.1:'+port+'/state').then(r=>r.json());
  assert.equal(state.service,profile.service);
- assert.equal(state.activeSources.includes('chatgpt'),true);
+ assert.equal(state.pets.some(p=>p.source==='chatgpt' && p.desktop && p.ready),true);
  invoke('stop');invoke('wake');
  const restarted=await fetch('http://127.0.0.1:'+port+'/state').then(r=>r.json());
- assert.equal(restarted.service,profile.service);assert.equal(restarted.activeSources.includes('chatgpt'),true);
+ assert.equal(restarted.service,profile.service);assert.equal(restarted.pets.some(p=>p.source==='chatgpt' && p.desktop && p.ready),true);
  const result={restartReady:true,project:profile.name,mode:input,root,data,port,coldDownloads:true,noNodePythonPath:true,desktopReady:true,usbDisabledForTest:true,service:state.service,output:state.output};
  fs.writeFileSync(path.join(workspace,'result.json'),JSON.stringify(result,null,2));
  fs.mkdirSync(path.join(source,'.qa'),{recursive:true});

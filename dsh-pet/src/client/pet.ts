@@ -1419,7 +1419,9 @@ export function makePetUI(rt: {
     // 无「打开网站 / 查看余额」（打开网站=就在网页里；查看余额已由对话框 /balance 命令实现）。
     const handleMenuAction = (leaf: MenuLeaf) => {
       if (isSizeAction(leaf.action)) {
-        resizePet('/dsh-pet-7340',cfg.id,leaf.action).then(()=>statePoller.now()).catch(error=>console.error(error.message));
+        resizePet('/dsh-pet-7340', cfg.id, leaf.action)
+          .then(() => statePoller.now())
+          .catch((error) => console.error(error.message));
         return;
       }
       const selected = characterAction(leaf.action);
@@ -1761,7 +1763,8 @@ export function makePetUI(rt: {
             const next = current.map((p) => {
               const resized = s.pets[p.id]?.size?.data as { size?: number; sizePercent?: number } | undefined;
               if (resized?.size && resized.size !== p.size) {
-                changed = true; p = { ...p, size: resized.size, sizePercent: resized.sizePercent };
+                changed = true;
+                p = { ...p, size: resized.size, sizePercent: resized.sizePercent };
               }
               const id = s.pets[p.id]?.character?.data as { id?: CharacterId } | undefined;
               if (id?.id && id.id !== p.character) {

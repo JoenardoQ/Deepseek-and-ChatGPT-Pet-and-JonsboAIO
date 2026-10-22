@@ -1,3 +1,4 @@
+import globals from 'globals';
 // ESLint 扁平配置（ESLint 9 flat config）
 // 规则基调：js recommended + typescript-eslint recommended（未使用变量/类型相关规则）
 //           + react-hooks 钩子规则（client 半侧是 React 代码）
@@ -10,7 +11,16 @@ import reactHooks from 'eslint-plugin-react-hooks';
 export default tseslint.config(
   { ignores: ['lib/**', 'scripts/**', 'assets/**', 'runtime/**', 'node_modules/**'] },
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommended.map((config) => ({ ...config, files: ['**/*.ts'] })),
+  { files: ['bridge/**/*.mjs', 'bridge/**/*.cjs', 'test-jonsbo/**/*.mjs'], languageOptions: { globals: globals.node } },
+  { files: ['bridge/preview.js'], languageOptions: { globals: globals.browser } },
+  {
+    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+    rules: {
+      'no-unused-vars': ['error', { ignoreRestSiblings: true }],
+      'no-empty': ['error', { allowEmptyCatch: true }],
+    },
+  },
   {
     // TS 文件：类型正确性由 tsc 负责，关闭 no-undef（避免 window/fetch 等全局误报）
     files: ['**/*.ts'],

@@ -173,8 +173,9 @@ describe('createMemeImage —— 两端共用的配图节点', () => {
   });
 });
 
-test('role-owned updated illustrations carry the same version as the installed build',()=>{
- const url=new URL(memeImageUrl('你好呀','http://127.0.0.1/dsh-pet-7340','@chatgpt'));
- assert.equal(url.searchParams.get('v'),'1.1.2');assert.ok(url.pathname.includes('%40chatgpt'));
- assert.equal(new URL(memeImageUrl('可爱','http://127.0.0.1/dsh-pet-7340','main')).search,'');
+test('role-owned updated illustrations carry the same version as the installed build', () => {
+  const url = new URL(memeImageUrl('你好呀', 'http://127.0.0.1/dsh-pet-7340', '@chatgpt'));
+  assert.equal(url.searchParams.get('v'), '1.1.2');
+  assert.ok(url.pathname.includes('%40chatgpt'));
+  assert.equal(new URL(memeImageUrl('可爱', 'http://127.0.0.1/dsh-pet-7340', 'main')).search, '');
 });

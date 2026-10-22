@@ -60,19 +60,22 @@ test('bridge request protections and control lifecycle', async (t) => {
   ).json();
   assert.equal(wake.control.state, 'thinking');
   assert.equal(wake.version, 4);
-  const implicit = await fetch(base + '/event', {method:'POST',headers,body:JSON.stringify({action:'wake'})});
+  const implicit = await fetch(base + '/event', { method: 'POST', headers, body: JSON.stringify({ action: 'wake' }) });
   assert.equal(implicit.status, 400, 'stale preview must not wake ChatGPT');
-  const connection = async (value, authorized = true) => fetch(base + '/device/connection', {
-    method: 'POST', headers: authorized ? headers : {}, body: JSON.stringify(value),
-  });
-  assert.equal((await connection({source:'chatgpt',enabled:false}, false)).status, 403);
-  assert.equal((await connection({source:'bogus',enabled:true})).status, 400);
-  let changed = await (await connection({source:'chatgpt',enabled:false})).json();
+  const connection = async (value, authorized = true) =>
+    fetch(base + '/device/connection', {
+      method: 'POST',
+      headers: authorized ? headers : {},
+      body: JSON.stringify(value),
+    });
+  assert.equal((await connection({ source: 'chatgpt', enabled: false }, false)).status, 403);
+  assert.equal((await connection({ source: 'bogus', enabled: true })).status, 400);
+  let changed = await (await connection({ source: 'chatgpt', enabled: false })).json();
   assert.equal(changed.control.screen, false);
   assert.equal(changed.screens.dsh, true);
-  changed = await (await connection({source:'dsh',enabled:false})).json();
+  changed = await (await connection({ source: 'dsh', enabled: false })).json();
   assert.equal(changed.screens.dsh, false);
-  changed = await (await connection({source:'chatgpt',enabled:true})).json();
+  changed = await (await connection({ source: 'chatgpt', enabled: true })).json();
   assert.equal(changed.screens.chatgpt, true);
   assert.equal(changed.screens.dsh, false);
   const bad = await fetch(base + '/frame', {
@@ -81,16 +84,30 @@ test('bridge request protections and control lifecycle', async (t) => {
     body: JSON.stringify({ source: 'dsh', png: 'no', animation: 'idle' }),
   });
   assert.equal(bad.status, 400);
-  const post = (route, value) => fetch(base+route,{method:'POST',headers,body:JSON.stringify(value)});
-  assert.equal((await post('/device/source',{source:'dsh'})).status,409);
-  for(const source of ['dsh','chatgpt'])await post('/frame',{source,character:source==='dsh'?'fish':'chatgpt',png:'iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB',animation:'idle'});
-  changed=await(await post('/device/source',{source:'dsh'})).json();assert.equal(changed.screenSource,'dsh');
-  changed=await(await post('/device/source',{source:'chatgpt'})).json();assert.equal(changed.screenSource,'chatgpt');
-  changed=await(await post('/duet',{mode:'cafe'})).json();assert.equal(changed.duet.action,'cafe');
-  changed=await(await post('/duet',{mode:'off'})).json();assert.equal(changed.duet.active,false);
-  await post('/duet',{mode:'auto'});
+  const post = (route, value) => fetch(base + route, { method: 'POST', headers, body: JSON.stringify(value) });
+  assert.equal((await post('/device/source', { source: 'dsh' })).status, 409);
+  for (const source of ['dsh', 'chatgpt'])
+    await post('/frame', {
+      source,
+      character: source === 'dsh' ? 'fish' : 'chatgpt',
+      png: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB',
+      animation: 'idle',
+    });
+  changed = await (await post('/device/source', { source: 'dsh' })).json();
+  assert.equal(changed.screenSource, 'dsh');
+  changed = await (await post('/device/source', { source: 'chatgpt' })).json();
+  assert.equal(changed.screenSource, 'chatgpt');
+  changed = await (await post('/duet', { mode: 'cafe' })).json();
+  assert.equal(changed.duet.action, 'cafe');
+  changed = await (await post('/duet', { mode: 'off' })).json();
+  assert.equal(changed.duet.active, false);
+  await post('/duet', { mode: 'auto' });
   const hide = await (
-    await fetch(base + '/event', { method: 'POST', headers, body: JSON.stringify({ source: 'chatgpt', action: 'hide' }) })
+    await fetch(base + '/event', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ source: 'chatgpt', action: 'hide' }),
+    })
   ).json();
   assert.equal(hide.control.visible, false);
   assert.equal(hide.activeSources.includes('dsh'), true);

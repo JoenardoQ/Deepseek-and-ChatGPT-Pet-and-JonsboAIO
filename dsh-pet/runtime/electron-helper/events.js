@@ -73,7 +73,7 @@ PetSprite.prototype.onWorkTick = function onWorkTick(snapshot, tick) {
     Array.isArray(textGroup) && textGroup.length > 0
       ? textGroup[Math.floor(Math.random() * textGroup.length)]
       : undefined;
-  this.workTask=(snapshot&&snapshot.task)||null;
+  this.workTask = (snapshot && snapshot.task) || null;
   this.workText = this.workTask || configuredText || null;
   const terminal = state === 'success' || state === 'error';
   // 气泡点亮/收起只在状态变化时动作：同状态后续 tick（todo 文案更新、其它会话事件搅动 ts）
@@ -265,7 +265,10 @@ async function pollStateOnce() {
   try {
     const s = await S.fetchState(STATE_URL);
     if (!s) return;
-    for(const pet of sprites){const id=s.pets?.[pet.pet.id]?.character?.data?.id;if(id)pet.applyCharacter(id);}
+    for (const pet of sprites) {
+      const id = s.pets?.[pet.pet.id]?.character?.data?.id;
+      if (id) pet.applyCharacter(id);
+    }
     if (stateBaseline === null) {
       stateBaseline = S.flattenCounters(s); // 首拉：只记基线，不渲染（避免启动/重载时重放旧气泡）
       return;

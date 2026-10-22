@@ -10,8 +10,50 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: windows-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  source:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      DESKTOP_PET_HEADLESS: '1'
+      PET_SKIP_RUNTIME_SETUP: '1'
+      PET_DATA_DIR: ${{ runner.temp }}/pet-ci/jonsbo
+      DSH_HOME: ${{ runner.temp }}/pet-ci/dsh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: dsh-pet/package-lock.json
+      - run: npm --prefix dsh-pet ci --ignore-scripts --legacy-peer-deps --no-audit --no-fund
+      - run: npm --prefix dsh-pet run typecheck
+      - run: npm --prefix dsh-pet run lint
+      - run: npm --prefix dsh-pet run format:check
+      - run: npm --prefix dsh-pet test
+      - run: npm --prefix dsh-pet run build
+      - name: Check committed runtime matches source
+        shell: pwsh
+        run: |
+          $changes = git status --porcelain -- dsh-pet/lib dsh-pet/runtime/electron-helper/shared-core.js dsh-pet/package.json
+          if ($changes) { throw "Committed runtime differs from source: $changes" }
+      - run: node dsh-pet/node_modules/playwright/cli.js install chromium
+      - run: npm --prefix dsh-pet run test:ui
+      - run: node scripts/test-gif-playback.mjs all
+      - run: node scripts/test-screen-room.mjs
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: source-and-ui-diagnostics
+          path: .qa
+          if-no-files-found: ignore
+
   windows:
+    needs: source
     runs-on: windows-latest
     timeout-minutes: 25
     env:
@@ -19,6 +61,8 @@ jobs:
       DESKTOP_PET_RUN_COLD_TEST: '1'
       PET_SKIP_RUNTIME_SETUP: '1'
       DSH_PET_USE_WINDOWS_BOOTSTRAP: '0'
+      PET_DATA_DIR: ${{ runner.temp }}/pet-ci/jonsbo
+      DSH_HOME: ${{ runner.temp }}/pet-ci/dsh
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,7 +75,7 @@ jobs:
         with:
           path: .qa/launcher-smoke
           key: windows-runtime-${{ hashFiles('scripts/windows-launcher.json', 'scripts/runtime-lock.json') }}
-      - run: npm install --omit=dev --omit=peer --ignore-scripts --package-lock=false --no-audit --no-fund
+      - run: npm ci --omit=dev --ignore-scripts --legacy-peer-deps --no-audit --no-fund
       - run: python -m pip install -r dsh-pet/desktop/requirements.txt
       - run: node --test dsh-pet/test-jonsbo/*.test.mjs test/*.test.mjs
       - run: python -m unittest discover -s dsh-pet/test-jonsbo -p 'test_*.py'
@@ -78,6 +122,6 @@ jobs:
           if ($LASTEXITCODE -eq 0) {
             gh release upload $env:GITHUB_REF_NAME @files --clobber --repo $env:GH_REPO
           } else {
-            gh release create $env:GITHUB_REF_NAME @files --notes-file docs/releases/v1.1.2.md --prerelease --repo $env:GH_REPO
+            gh release create $env:GITHUB_REF_NAME @files --notes-file "docs/releases/$env:GITHUB_REF_NAME.md" --prerelease --repo $env:GH_REPO
           }
           if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }

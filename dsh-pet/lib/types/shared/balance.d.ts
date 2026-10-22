@@ -3,10 +3,13 @@ export interface RawBalanceResult {
     ok: boolean;
     provider?: string;
     /** 展示形态（host 写叶子时带上）：windows = 三窗口用量，money = 账户金额 */
-    shape?: 'windows' | 'money';
+    shape?: 'windows' | 'money' | 'quota';
     reason?: string;
     message?: string;
     data?: {
+        windows?: unknown;
+        plan?: unknown;
+        updatedAt?: unknown;
         rolling?: unknown;
         weekly?: unknown;
         monthly?: unknown;
@@ -28,9 +31,18 @@ export interface RawBalanceResult {
 /** 计价档位装饰（气泡上的「峰/谷」）：由服务商算好后随数据带出，展示层原样渲染 */
 export type PricingTier = 'peak' | 'idle';
 /** 已解析的余额视图（展示 + 档位计算用） */
+export interface QuotaWindow {
+    label: string;
+    usedPercent: number;
+    windowMinutes: number;
+    resetsAt?: string;
+}
 export interface BalanceView {
+    quotaWindows?: QuotaWindow[];
+    plan?: string;
+    updatedAt?: string;
     provider: string;
-    shape: 'windows' | 'money';
+    shape: 'windows' | 'money' | 'quota';
     ok: true;
     /**
      * 三窗口已用百分比（0-100 数字）+ 各自的重置时间。

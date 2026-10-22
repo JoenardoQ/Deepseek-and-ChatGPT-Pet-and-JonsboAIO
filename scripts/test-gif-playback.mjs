@@ -15,7 +15,7 @@ const server=http.createServer((req,res)=>{
   res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.webm')?'video/webm':file.endsWith('.png')?'image/png':'image/gif');fs.createReadStream(file).pipe(res);
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
-const browser=await chromium.launch({headless:true,executablePath:process.env.PET_TEST_BROWSER || 'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+const browser=await chromium.launch({headless:true,executablePath:process.env.PET_BROWSER_PATH || process.env.PET_TEST_BROWSER});
 try{
  const page=await browser.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:'+server.address().port);
@@ -39,7 +39,7 @@ try{
    await window.player.play('/dsh-pet/assets/pets/chatgpt/gif/princess-013.gif',false,()=>{});
    window.S=PetShared;window.frames=[];
    window.sprites=[{gifPlayer:window.player,videoA:{readyState:0},videoB:{readyState:0},anim:'working',character:'chatgpt',workText:'哼，才没有担心你',applyDuet(){},bubble:null}];
-   window.jonsboBridge={async frame(value){window.frames.push(value);return {source:'chatgpt'};}};
+   window.jonsboBridge={async presence(){return {capture:{enabled:true,fps:24}};},async frame(value){window.frames.push(value);return {source:'chatgpt'};}};
  });
  await page.addScriptTag({path:path.join(root,'dsh-pet/runtime/electron-helper/jonsbo-renderer.js')});
  await page.waitForTimeout(700);
@@ -84,5 +84,11 @@ try{
  assert.equal(blocked,true,'fixture must reproduce the old illustration export failure');
  await page.evaluate(async()=>{const img=window.sprites[0].bubble.querySelector('img');img.crossOrigin='anonymous';img.src+='&cors';await img.decode();});
  await page.waitForTimeout(400);assert.ok(await page.evaluate(()=>window.frames.length)>0,'corrected image must recover frame exports');
+ // Without projection or a preview, keep animation alive but stop expensive PNG export.
+ await page.evaluate(()=>{window.jonsboBridge.presence=async()=>({capture:{enabled:false,fps:8}});});
+ await page.waitForTimeout(1400);const idleFrames=await page.evaluate(()=>window.frames.length);
+ await page.waitForTimeout(500);assert.equal(await page.evaluate(()=>window.frames.length),idleFrames);
+ await page.evaluate(()=>{window.jonsboBridge.presence=async()=>({capture:{enabled:true,fps:24}});});
+ await page.waitForTimeout(1400);assert.ok(await page.evaluate(()=>window.frames.length)>idleFrames);
  console.log(JSON.stringify({headless:true,downloaded:false,petStarted:false,onceEnded:once,screen,dsh,blocked,continuing,verified:results},null,2));
 } finally { await browser.close();await new Promise(r=>server.close(r)); }

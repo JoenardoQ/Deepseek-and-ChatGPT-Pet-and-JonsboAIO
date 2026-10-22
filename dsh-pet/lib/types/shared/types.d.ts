@@ -70,10 +70,12 @@ export interface Animations {
 export interface Pet {
     /** 唯一标识（程序定位用：素材/记忆/端点参数都按它；绝不重叠，冲突即配置错误） */
     id: string;
+    character?: import('./characters').CharacterId;
     /** 显示名（可重复）：悬浮提示、AI 人设（无条件追加「你的名字是 X」）、未来命令行定位的显示层。
      *  与 id 的区别：id 唯一、程序认它；name 给人看、可重复。缺失/留空按该宠物 id 处理并告警 */
     name: string;
     size: number;
+    sizePercent?: number;
     /** 是否启用余额功能：true=触发余额动画+显示余额气泡；false=该宠物完全禁用余额。缺失即配置错误 */
     balanceEnabled: boolean;
     /** 是否启用碎碎念：true=按 eventsRefreshSec.whisper 周期生成一句话并播碎碎念动画；false=禁用。

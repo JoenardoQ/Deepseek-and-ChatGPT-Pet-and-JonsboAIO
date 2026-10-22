@@ -47,7 +47,7 @@ export function memeImageUrl(name: string, base = '/dsh-pet-7340', assetRoot = '
   const root = String(assetRoot ?? '').trim();
   const prefix = root ? '/pic/memes/' + encodeURIComponent(root) : '/pic/memes';
   const url = base + prefix + '/' + encodeURIComponent(name) + '.png';
-  return ['@chatgpt','@whale'].includes(root) ? versionedAsset(url) : url;
+  return ['@chatgpt', '@whale'].includes(root) ? versionedAsset(url) : url;
 }
 
 /** 气泡配图 class（两端共用，样式见 MEME_BUBBLE_CSS） */

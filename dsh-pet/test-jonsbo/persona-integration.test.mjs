@@ -16,14 +16,14 @@ test('all persona action labels, work copy and 54 illustrations belong to their 
   for (const id of ['chatgpt', 'whale']) {
     const menu = S.characterActionMenu(id, {});
     if (id === 'chatgpt') {
-      const leaves = menu[0].children.flatMap(group => group.children);
+      const leaves = menu[0].children.flatMap((group) => group.children);
       assert.equal(leaves.length, S.PRINCESS_ACTIONS.length);
       assert.ok(leaves.length >= 8);
       for (const action of S.PRINCESS_ACTIONS) {
-        assert.ok(leaves.some(leaf => leaf.anim === '__' + action.id && leaf.label === action.label));
+        assert.ok(leaves.some((leaf) => leaf.anim === '__' + action.id && leaf.label === action.label));
         const media = S.characterMedia(id, '__' + action.id);
-        assert.equal(new URL(media.path,'http://127.0.0.1').pathname, '/thumb/@chatgpt/' + action.id + '.gif');
-        assert.equal(new URL(media.path,'http://127.0.0.1').searchParams.get('v'),'1.1.2');
+        assert.equal(new URL(media.path, 'http://127.0.0.1').pathname, '/thumb/@chatgpt/' + action.id + '.gif');
+        assert.equal(new URL(media.path, 'http://127.0.0.1').searchParams.get('v'), '1.1.2');
         assert.ok(fs.statSync(path.join(root, 'assets/pets/chatgpt/gif', action.id + '.gif')).size > 1000);
       }
     } else assert.equal(menu[0].children.length, 8);
@@ -138,16 +138,16 @@ test(
             await r.arrayBuffer();
           }
       }
-      for (const id of ['chatgpt','whale','fish']) {
-        const media = S.characterMedia(id,'待机呼吸休闲');
+      for (const id of ['chatgpt', 'whale', 'fish']) {
+        const media = S.characterMedia(id, '待机呼吸休闲');
         const response = await fetch(base + media.path);
-        assert.equal(response.status,200,media.path);
-        assert.equal(response.headers.get('content-type'),id==='chatgpt'?'image/gif':'video/webm');
+        assert.equal(response.status, 200, media.path);
+        assert.equal(response.headers.get('content-type'), id === 'chatgpt' ? 'image/gif' : 'video/webm');
         await response.arrayBuffer();
       }
-      assert.equal((await fetch(base+'/thumb/@fish/working.gif')).status,404);
-      assert.equal((await fetch(base+'/thumb/@chatgpt/boxing.gif')).status,404);
-      assert.equal((await fetch(base+'/thumb/@duo/boxing.gif')).status,200);
+      assert.equal((await fetch(base + '/thumb/@fish/working.gif')).status, 404);
+      assert.equal((await fetch(base + '/thumb/@chatgpt/boxing.gif')).status, 404);
+      assert.equal((await fetch(base + '/thumb/@duo/boxing.gif')).status, 200);
       await post('/character', { petId: 'main', character: 'chatgpt' });
       const text = '用户任务提到大肥鱼，原文不能改';
       const image = S.DIALOGUE_IMAGES[0].name;

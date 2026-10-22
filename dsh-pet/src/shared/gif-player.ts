@@ -111,19 +111,22 @@ export class GifPlayer {
       this.ready = true;
       this.canvas.style.display = '';
       nextAt += duration;
-      this.timer = setTimeout(() => {
-        if (gen !== this.generation) return;
-        index++;
-        if (index === count) {
-          if (this.once) {
-            this.timer = null;
-            this.ended();
-            return;
+      this.timer = setTimeout(
+        () => {
+          if (gen !== this.generation) return;
+          index++;
+          if (index === count) {
+            if (this.once) {
+              this.timer = null;
+              this.ended();
+              return;
+            }
+            index = 0;
           }
-          index = 0;
-        }
-        void draw();
-      }, Math.max(0, nextAt - performance.now()));
+          void draw();
+        },
+        Math.max(0, nextAt - performance.now()),
+      );
     };
     await draw();
   }

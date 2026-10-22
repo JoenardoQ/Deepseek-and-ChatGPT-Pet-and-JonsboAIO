@@ -103,6 +103,8 @@
     ".agents/plugins/marketplace.json",
     "THIRD_PARTY_NOTICES.md",
     "docs",
-    "dsh-pet/assets/screen-backgrounds"
+    "dsh-pet/assets/screen-backgrounds",
+    "dsh-pet/bridge/*.css",
+    "dsh-pet/bridge/*.js"
   ]
 }

@@ -10,7 +10,7 @@
 // ---------- 单只宠物（行为与浏览器 PetCard 一致；纯逻辑来自 src/shared） ----------
 class PetSprite {
   constructor(pet) {
-    this.character = pet.character||S.readCharacter(window.localStorage,pet.id);
+    this.character = pet.character || S.readCharacter(window.localStorage, pet.id);
     this.pet = pet; // 这只宠物的配置段（拍平后的成品实例，条目级字段已吹入：动画池/权重/周期）
     // 页面级缩放（main 对窗口 setZoomFactor(CONFIG.scale)，见 DESIGN.md §3.5）统一放大整窗：
     // pet.size 即 CSS 像素基准，**不再手工乘 CONFIG.scale**——固定 px UI（菜单/积分/聊天）
@@ -374,12 +374,23 @@ class PetSprite {
     const media = S.characterMedia(this.character, next, this.assetRoot, S.ANIMATION_EXT || '.webm');
     if (media.kind === 'gif') {
       for (const video of [this.videoA, this.videoB]) {
-        video.onended = null; video.pause(); video.classList.remove('is-front');
+        video.onended = null;
+        video.pause();
+        video.classList.remove('is-front');
       }
-      this.pendingSquash = false; this.pendingMove = null;
-      this.gifPlayer.play(BASE + media.path, nextOnce, () => this.handleEnded()).then(() => {
-        if (this.gen === gen) this.pending = null;
-      }).catch(error => { if (this.gen === gen) { this.pending = null; this.showWhisper(error.message); } });
+      this.pendingSquash = false;
+      this.pendingMove = null;
+      this.gifPlayer
+        .play(BASE + media.path, nextOnce, () => this.handleEnded())
+        .then(() => {
+          if (this.gen === gen) this.pending = null;
+        })
+        .catch((error) => {
+          if (this.gen === gen) {
+            this.pending = null;
+            this.showWhisper(error.message);
+          }
+        });
       return;
     }
     this.gifPlayer.stop();
@@ -1032,7 +1043,8 @@ class PetSprite {
    * 在这里按当前窗口原点重算一次，贴光标不会漂（sendBounds 每帧会调本函数）。
    */
   renderTip() {
-    if (this.tip.textContent !== S.characterLabel(this.character)) this.tip.textContent = S.characterLabel(this.character);
+    if (this.tip.textContent !== S.characterLabel(this.character))
+      this.tip.textContent = S.characterLabel(this.character);
     const cursor = this.tipCursor;
     if (cursor) {
       const winX = this.pos.x - this.margin.l;
@@ -1152,9 +1164,16 @@ class PetSprite {
     // 桌面专属工具根项（打开网站 / 查看余额 / 碎碎念 / 对话 / 回到初始位置 / 重载配置）+ 共享菜单树（动作→分类→具体动画）
     // 碎碎念/对话项无条件显示：手动触发不受 whisperEnabled 限制（该字段只影响自动周期轮询）
     // 首项文案随宿主形态变（OPEN_TARGET）：宿主是 DSH 桌面应用时点是"唤起桌面应用窗口"，仍叫「打开网站」会误导
-    const tools = window.__jonsboDebug?.source === 'chatgpt' ? [] : [{ label: OPEN_TARGET === 'desktop' ? '打开 DeepSeek Harness' : '打开网站', action: 'open-site' }];
-    if (this.pet.balanceEnabled || window.__jonsboDebug?.source === 'chatgpt') tools.push({ label: window.__jonsboDebug?.source === 'chatgpt' ? '查看套餐用量' : '查看余额', action: 'show-balance' });
-    tools.push({label:'碎碎念',action:'whisper'},{label:'对话',action:'chat'});
+    const tools =
+      window.__jonsboDebug?.source === 'chatgpt'
+        ? []
+        : [{ label: OPEN_TARGET === 'desktop' ? '打开 DeepSeek Harness' : '打开网站', action: 'open-site' }];
+    if (this.pet.balanceEnabled || window.__jonsboDebug?.source === 'chatgpt')
+      tools.push({
+        label: window.__jonsboDebug?.source === 'chatgpt' ? '查看套餐用量' : '查看余额',
+        action: 'show-balance',
+      });
+    tools.push({ label: '碎碎念', action: 'whisper' }, { label: '对话', action: 'chat' });
     tools.push(
       { label: '回到初始位置', action: 'home' },
       // 改配置文件后免去回设置页点保存：请宿主重启桌面 Helper（全部桌面宠物窗口按最新配置重建）。
@@ -1162,19 +1181,30 @@ class PetSprite {
       { label: '重载配置', action: 'reload' },
     );
     if (window.jonsboBridge) {
-      tools.unshift({ label: '乔思伯屏幕', children: [
-        { label: '打开投屏控制台', action: 'jonsbo-status' },
-        { label: '连接屏幕', action: 'jonsbo-connect' },
-        { label: '断开当前投屏', action: 'jonsbo-disconnect' },
-        { label: '接管屏幕（退出官方程序）', action: 'jonsbo-takeover' },
-        { label: '切到 DSH 桌宠', action: 'jonsbo-source-dsh' },
-        { label: '切到 GPT 桌宠', action: 'jonsbo-source-chatgpt' },
-        { label:'屏幕背景', children:(window.__jonsboDebug?.backgrounds||[]).map(b=>({label:(window.__jonsboDebug?.appearance?.background===b.id?'✓ ':'')+b.label,action:'jonsbo-background-'+b.id})) },
-      ] });
-      if (window.__jonsboDebug?.source === 'chatgpt')
-        tools.push({ label: '关闭桌宠', action: 'jonsbo-shutdown' });
+      tools.unshift({
+        label: '乔思伯屏幕',
+        children: [
+          { label: '打开投屏控制台', action: 'jonsbo-status' },
+          { label: '连接屏幕', action: 'jonsbo-connect' },
+          { label: '断开当前投屏', action: 'jonsbo-disconnect' },
+          { label: '接管屏幕（退出官方程序）', action: 'jonsbo-takeover' },
+          { label: '切到 DSH 桌宠', action: 'jonsbo-source-dsh' },
+          { label: '切到 GPT 桌宠', action: 'jonsbo-source-chatgpt' },
+          {
+            label: '屏幕背景',
+            children: (window.__jonsboDebug?.backgrounds || []).map((b) => ({
+              label: (window.__jonsboDebug?.appearance?.background === b.id ? '✓ ' : '') + b.label,
+              action: 'jonsbo-background-' + b.id,
+            })),
+          },
+        ],
+      });
+      if (window.__jonsboDebug?.source === 'chatgpt') tools.push({ label: '关闭桌宠', action: 'jonsbo-shutdown' });
     }
-    const tree = [S.characterMenu(this.character), S.sizeMenu(this.pet.sizePercent), S.duetMenu()].concat(tools,S.characterActionMenu(this.character,this.animations));
+    const tree = [S.characterMenu(this.character), S.sizeMenu(this.pet.sizePercent), S.duetMenu()].concat(
+      tools,
+      S.characterActionMenu(this.character, this.animations),
+    );
     if (!tree.length) return;
     this.menuOpen = true;
     this.setInteractive(true); // 菜单是窗口内 DOM：悬停期间整窗保持可交互，关闭后恢复命中区穿透
@@ -1201,47 +1231,80 @@ class PetSprite {
     const action = status?.active && status.owner === window.__jonsboDebug?.source ? status.action : null;
     if (action === this.duetAction) return;
     this.duetAction = action;
-    this.stopMove(); this.stopThrow(); this.pending = null; this.gen++;
+    this.stopMove();
+    this.stopThrow();
+    this.pending = null;
+    this.gen++;
     if (action) this.switchTo('__duet-' + action, false);
-    else if(!this.resumeWorkStatusAnim())this.playIdle();
+    else if (!this.resumeWorkStatusAnim()) this.playIdle();
   }
   applyCharacter(character) {
-    if(!S.CHARACTERS.some(c=>c.id===character)||character===this.character)return;
-    this.chatClose?.();this.chatClose=null;this.character=character;this.gen++;this.pending=null;this.whisperOn=false;this.whisperImage=undefined;this.workOn=false;this.workText=null;
-    try{window.localStorage.setItem('dsh-pet:character:'+this.pet.id,character);}catch{}
-    this.hit.setAttribute('aria-label',S.characterLabel(character));if(this.workState){this.workText=this.workTask||S.characterWorkTexts(character)[S.WORK_STATUS_INDEX[this.workState]]?.[0];this.workOn=!!this.workText;}this.renderBubble();this.switchTo(this.anim||this.animations.idle[0],this.once);
+    if (!S.CHARACTERS.some((c) => c.id === character) || character === this.character) return;
+    this.chatClose?.();
+    this.chatClose = null;
+    this.character = character;
+    this.gen++;
+    this.pending = null;
+    this.whisperOn = false;
+    this.whisperImage = undefined;
+    this.workOn = false;
+    this.workText = null;
+    try {
+      window.localStorage.setItem('dsh-pet:character:' + this.pet.id, character);
+    } catch {}
+    this.hit.setAttribute('aria-label', S.characterLabel(character));
+    if (this.workState) {
+      this.workText = this.workTask || S.characterWorkTexts(character)[S.WORK_STATUS_INDEX[this.workState]]?.[0];
+      this.workOn = !!this.workText;
+    }
+    this.renderBubble();
+    this.switchTo(this.anim || this.animations.idle[0], this.once);
   }
   onMenuAction(leaf) {
     this.closeMenu();
     if (!leaf || typeof leaf !== 'object') return;
     if (leaf.action?.startsWith('duet-') && window.jonsboBridge) {
-      window.jonsboBridge.setDuet(leaf.action.slice(5)).then(result => {
-        if (result.error) this.showWhisper(result.error);
-        else if (!result.duet?.eligible && leaf.action !== 'duet-off') this.showWhisper(result.duet?.reason || '等待另一位桌宠上线');
-      }).catch(error => this.showWhisper(error.message));
+      window.jonsboBridge
+        .setDuet(leaf.action.slice(5))
+        .then((result) => {
+          if (result.error) this.showWhisper(result.error);
+          else if (!result.duet?.eligible && leaf.action !== 'duet-off')
+            this.showWhisper(result.duet?.reason || '等待另一位桌宠上线');
+        })
+        .catch((error) => this.showWhisper(error.message));
       return;
     }
     if (S.isSizeAction(leaf.action)) {
-      S.resizePet(BASE,this.pet.id,leaf.action).catch(error=>this.showWhisper(error.message));
+      S.resizePet(BASE, this.pet.id, leaf.action).catch((error) => this.showWhisper(error.message));
       return;
     }
-    const character=S.characterAction(leaf.action);
-    if(character) {
-      S.saveCharacter(BASE,this.pet.id,character).then(()=>this.applyCharacter(character)).catch(error=>this.showWhisper(error.message));
+    const character = S.characterAction(leaf.action);
+    if (character) {
+      S.saveCharacter(BASE, this.pet.id, character)
+        .then(() => this.applyCharacter(character))
+        .catch((error) => this.showWhisper(error.message));
       return;
     }
     if (leaf.action?.startsWith('jonsbo-') && window.jonsboBridge) {
       const bridge = window.jonsboBridge;
-      const request = leaf.action === 'jonsbo-status' ? bridge.openStatus()
-        : leaf.action === 'jonsbo-takeover' ? bridge.takeOver()
-        : leaf.action.startsWith('jonsbo-source-') ? bridge.selectSource(leaf.action.slice(14))
-        : leaf.action.startsWith('jonsbo-background-') ? bridge.setBackground(leaf.action.slice(18))
-        : leaf.action === 'jonsbo-shutdown' ? bridge.shutdown()
-        : bridge.setScreen(leaf.action === 'jonsbo-connect');
-      request.then((result) => {
-        if (result?.message) this.showWhisper(result.message);
-        if (result?.error) this.showWhisper('连接失败：' + result.error);
-      }).catch((error) => this.showWhisper('操作失败：' + error.message));
+      const request =
+        leaf.action === 'jonsbo-status'
+          ? bridge.openStatus()
+          : leaf.action === 'jonsbo-takeover'
+            ? bridge.takeOver()
+            : leaf.action.startsWith('jonsbo-source-')
+              ? bridge.selectSource(leaf.action.slice(14))
+              : leaf.action.startsWith('jonsbo-background-')
+                ? bridge.setBackground(leaf.action.slice(18))
+                : leaf.action === 'jonsbo-shutdown'
+                  ? bridge.shutdown()
+                  : bridge.setScreen(leaf.action === 'jonsbo-connect');
+      request
+        .then((result) => {
+          if (result?.message) this.showWhisper(result.message);
+          if (result?.error) this.showWhisper('连接失败：' + result.error);
+        })
+        .catch((error) => this.showWhisper('操作失败：' + error.message));
       return;
     }
     if (leaf.action === 'open-site') {
@@ -1297,12 +1360,21 @@ class PetSprite {
   // 注意这里不再直接拉余额：数据只有一个出口（S），菜单只负责"让它刷新"。
   showBalanceFromMenu() {
     if (window.__jonsboDebug?.source === 'chatgpt') {
-      S.postAction(BALANCE_URL).then(async ok => {
-        if(!ok)throw Error('套餐用量刷新失败');
-        const response=await fetch(BASE+'/state'),state=await response.json();
-        const balance=S.toBalanceState(state.sections.balance.data);
-        this.showWhisper(balance?S.balanceBubbleView(balance).map(row=>row.text).join('\n'):'宿主尚未返回套餐用量');
-      }).catch(error=>this.showWhisper(error.message));
+      S.postAction(BALANCE_URL)
+        .then(async (ok) => {
+          if (!ok) throw Error('套餐用量刷新失败');
+          const response = await fetch(BASE + '/state'),
+            state = await response.json();
+          const balance = S.toBalanceState(state.sections.balance.data);
+          this.showWhisper(
+            balance
+              ? S.balanceBubbleView(balance)
+                  .map((row) => row.text)
+                  .join('\n')
+              : '宿主尚未返回套餐用量',
+          );
+        })
+        .catch((error) => this.showWhisper(error.message));
       return;
     }
     if (!this.pet.balanceEnabled) return;
@@ -1343,7 +1415,8 @@ class PetSprite {
       return; // 已开着：先关旧的
     }
     const m = S.mountChatDialog({
-      petId: this.pet.id,petName:S.characterLabel(this.character),
+      petId: this.pet.id,
+      petName: S.characterLabel(this.character),
       baseUrl: BASE + '/chat',
       x: Math.max(4, this.hit.getBoundingClientRect().right + 6),
       y: Math.max(4, this.hit.getBoundingClientRect().top + 6),
@@ -1391,8 +1464,10 @@ class PetSprite {
   }
 
   fitBubble() {
-    const top = Math.max(this.size * WINDOW_MARGIN_RATIO,
-      this.bubble.classList.contains('is-on') ? this.bubble.offsetHeight + this.size * 0.03 : 0);
+    const top = Math.max(
+      this.size * WINDOW_MARGIN_RATIO,
+      this.bubble.classList.contains('is-on') ? this.bubble.offsetHeight + this.size * 0.03 : 0,
+    );
     if (Math.abs(this.margin.t - top) < 1) return;
     this.margin.t = top;
     this.el.style.top = top + 'px';
@@ -1413,7 +1488,14 @@ class PetSprite {
     const workTerminal = this.workState === 'success' || this.workState === 'error';
     const slot =
       workTerminal && workOn ? 'work' : whisperOn ? 'whisper' : balanceOn ? 'balance' : workOn ? 'work' : 'none';
-    const whisperImg = slot === 'whisper' ? S.createMemeImage(S.characterMemeName(this.character,this.whisperImage||''), BASE, S.characterMemeRoot(this.character,this.pet.assetRoot || this.pet.id)) : null;
+    const whisperImg =
+      slot === 'whisper'
+        ? S.createMemeImage(
+            S.characterMemeName(this.character, this.whisperImage || ''),
+            BASE,
+            S.characterMemeRoot(this.character, this.pet.assetRoot || this.pet.id),
+          )
+        : null;
     this.bubble.classList.toggle(
       'is-whisper',
       // 余额「文字说明」（不可用状态）同样要换行变体：默认 nowrap 会把长文案顶出宠物宽度

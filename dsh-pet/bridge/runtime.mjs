@@ -14,7 +14,7 @@ export function config() {
   return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8').replace(/^\uFEFF/, '')) : {};
 }
 export function nodeCommand() {
-  if(process.env.PET_NODE)return process.env.PET_NODE;
+  if (process.env.PET_NODE) return process.env.PET_NODE;
   const portable = path.join(root, 'runtime/node/node.exe');
   if (existsSync(portable)) return portable;
   return process.env.PET_NODE || process.execPath;
@@ -23,5 +23,4 @@ export function pythonCommand() {
   return process.env.PET_PYTHON || config().python || 'python';
 }
 export const dshHome = process.env.DSH_HOME || path.join(userData, 'dsh');
-export const electronPath =
-  process.env.DSH_PET_ELECTRON_PATH || path.join(dshHome, 'electron/electron.exe');
+export const electronPath = process.env.DSH_PET_ELECTRON_PATH || path.join(dshHome, 'electron/electron.exe');

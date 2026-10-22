@@ -594,21 +594,23 @@ export function apply(ctx: any): void {
     try {
       const sel = ctx.agentDefaultModel.currentSelection();
       const hostAccount = typeof ctx.get === 'function' ? ctx.get('petHost', false) : undefined;
-      const result = hostAccount ? await hostAccount.balance(manual) : await queryBalance(
-        sel.provider,
-        async (ref) => {
-          const rc = await ctx.credentials.resolve(credentialRef(ref));
-          return rc?.value;
-        },
-        // `deepseek-account`（免费额度 / 平台登录）没有 API Key：它的凭证是 DSH 账号服务
-        // 持有的授权记录，只能经 getBalance 查询。账号服务是**可选**服务（软取，不放进
-        // inject）——没装账号插件时它不在场，此时该路由报 credential-missing 而不是崩。
-        async () => {
-          const account = ctx.get('deepseekAccount', false);
-          if (!account) return undefined;
-          return account.getBalance(accountClientMetadata());
-        },
-      );
+      const result = hostAccount
+        ? await hostAccount.balance(manual)
+        : await queryBalance(
+            sel.provider,
+            async (ref) => {
+              const rc = await ctx.credentials.resolve(credentialRef(ref));
+              return rc?.value;
+            },
+            // `deepseek-account`（免费额度 / 平台登录）没有 API Key：它的凭证是 DSH 账号服务
+            // 持有的授权记录，只能经 getBalance 查询。账号服务是**可选**服务（软取，不放进
+            // inject）——没装账号插件时它不在场，此时该路由报 credential-missing 而不是崩。
+            async () => {
+              const account = ctx.get('deepseekAccount', false);
+              if (!account) return undefined;
+              return account.getBalance(accountClientMetadata());
+            },
+          );
       state.writeSection('balance', mark(result));
     } catch (e) {
       state.writeSection(
@@ -843,20 +845,39 @@ export function apply(ctx: any): void {
     if (rest === 'host') {
       if (method !== 'GET') return { kind: 'json', status: 405, obj: { error: 'method not allowed' } };
       const selection = ctx.agentDefaultModel.currentSelection();
-      return { kind: 'json', status: 200, obj: { source: process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt' ? 'chatgpt' : 'dsh', provider: selection.provider, model: selection.model, chat: !!selection.model, whisper: !!selection.model, quota: selection.provider === 'codex-chatgpt' } };
+      return {
+        kind: 'json',
+        status: 200,
+        obj: {
+          source: process.env.DSH_PET_JONSBO_SOURCE === 'chatgpt' ? 'chatgpt' : 'dsh',
+          provider: selection.provider,
+          model: selection.model,
+          chat: !!selection.model,
+          whisper: !!selection.model,
+          quota: selection.provider === 'codex-chatgpt',
+        },
+      };
     }
     if (rest === 'size') {
       if (method !== 'POST') return { kind: 'json', status: 405, obj: { error: 'method not allowed' } };
       try {
         const value = JSON.parse(body || '{}');
-        if (!value || typeof value.petId !== 'string' || !isSizeAction(value.action) || Object.keys(value).some(k => !['petId','action'].includes(k))) throw Error('无效缩放请求');
+        if (
+          !value ||
+          typeof value.petId !== 'string' ||
+          !isSizeAction(value.action) ||
+          Object.keys(value).some((k) => !['petId', 'action'].includes(k))
+        )
+          throw Error('无效缩放请求');
         if (!findPetInstance(readPetConfig(), value.petId)) throw Error('未知桌宠');
         sizes.set(value.petId, value.action);
         const pet = findPetInstance(readPetConfig(), value.petId)!.pet;
         state.writePet(value.petId, 'size', { size: pet.size, sizePercent: pet.sizePercent });
         void syncDesktop();
         return { kind: 'json', status: 200, obj: { ok: true, size: pet.size, sizePercent: pet.sizePercent } };
-      } catch (error) { return { kind: 'json', status: 400, obj: { error: error instanceof Error ? error.message : String(error) } }; }
+      } catch (error) {
+        return { kind: 'json', status: 400, obj: { error: error instanceof Error ? error.message : String(error) } };
+      }
     }
     if (rest === 'character') {
       if (method !== 'POST') return { kind: 'json', status: 405, obj: { error: 'method not allowed' } };

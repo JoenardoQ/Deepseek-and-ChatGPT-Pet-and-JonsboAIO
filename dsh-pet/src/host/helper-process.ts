@@ -91,7 +91,9 @@ export function resolveElectronPath(candidates: Array<string | undefined> = []):
   try {
     const local = JSON.parse(readFileSync(join(packageRoot, 'bridge', 'local.json'), 'utf8')) as { electron?: string };
     push(local.electron);
-  } catch { /* Portable installs retain upstream discovery. */ }
+  } catch {
+    /* Portable installs retain upstream discovery. */
+  }
   try {
     const resolved = require('electron');
     if (typeof resolved === 'string' && resolved) push(resolved);
@@ -186,12 +188,17 @@ export async function ensureElectronDownload(options: EnsureElectronOptions = {}
   const exe = defaultElectronExe();
   if (existsSync(exe)) return exe;
   if (PLAT === 'win32' && process.env.DSH_PET_USE_WINDOWS_BOOTSTRAP !== '0' && Object.keys(options).length === 0) {
-    const bootstrap = [join(packageRoot, 'bridge/bootstrap.mjs'), join(packageRoot, '../bridge/bootstrap.mjs')].find(existsSync);
+    const bootstrap = [join(packageRoot, 'bridge/bootstrap.mjs'), join(packageRoot, '../bridge/bootstrap.mjs')].find(
+      existsSync,
+    );
     if (bootstrap) {
       try {
         const prepared = await (await import(pathToFileURL(bootstrap).href)).prepareWindows();
         if (prepared) return prepared;
-      } catch (error) { console.warn('[dsh-pet] Windows runtime preparation cancelled or failed:', error); return undefined; }
+      } catch (error) {
+        console.warn('[dsh-pet] Windows runtime preparation cancelled or failed:', error);
+        return undefined;
+      }
     }
   }
   if (existsSync(exe)) return exe;
@@ -222,7 +229,9 @@ export async function ensureElectronDownload(options: EnsureElectronOptions = {}
       try {
         const { default: extract } = await import('@electron-internal/extract-zip');
         await extract(archive, { dir: targetDir });
-      } finally { unlinkSync(archive); }
+      } finally {
+        unlinkSync(archive);
+      }
       if (!existsSync(exe)) throw new Error('Bundled Electron extraction failed');
       return exe;
     }

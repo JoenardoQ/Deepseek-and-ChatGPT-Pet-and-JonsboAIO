@@ -12,30 +12,45 @@ function available() {
     require.resolve('@electron/get');
     require.resolve('@electron-internal/extract-zip');
     return true;
-  } catch { return false; }
+  } catch {
+    return false;
+  }
 }
 function run(command, args, { quiet = false, cwd = root } = {}) {
   return new Promise((resolve, reject) => {
     let tail = '';
     const child = spawn(command, args, {
-      cwd, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
+      cwd,
+      windowsHide: true,
+      stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, ELECTRON_RUN_AS_NODE: '1' },
     });
-    for (const stream of [child.stdout, child.stderr]) stream.on('data', bytes => {
-      tail = (tail + bytes.toString()).slice(-1600);
-      if (!quiet) process.stderr.write(bytes);
-    });
-    const timer=setTimeout(()=>{child.kill();reject(new Error('运行依赖准备超时，请在启动窗口点击重试。'));},120000);
+    for (const stream of [child.stdout, child.stderr])
+      stream.on('data', (bytes) => {
+        tail = (tail + bytes.toString()).slice(-1600);
+        if (!quiet) process.stderr.write(bytes);
+      });
+    const timer = setTimeout(() => {
+      child.kill();
+      reject(new Error('运行依赖准备超时，请在启动窗口点击重试。'));
+    }, 120000);
     timer.unref?.();
-    child.once('error', error=>{clearTimeout(timer);reject(error);});
-    child.once('exit', code => {clearTimeout(timer);code === 0 ? resolve() : reject(new Error(`${path.basename(command)} exited ${code}: ${tail.trim()}`));});
+    child.once('error', (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    child.once('exit', (code) => {
+      clearTimeout(timer);
+      code === 0 ? resolve() : reject(new Error(`${path.basename(command)} exited ${code}: ${tail.trim()}`));
+    });
   });
 }
 export async function npmCommand() {
   for (const candidate of [
     path.join(path.dirname(nodeCommand()), 'node_modules/npm/bin/npm-cli.js'),
     path.resolve(path.dirname(nodeCommand()), '../lib/node_modules/npm/bin/npm-cli.js'),
-  ]) if (existsSync(candidate)) return [nodeCommand(), [candidate]];
+  ])
+    if (existsSync(candidate)) return [nodeCommand(), [candidate]];
   const win = process.platform === 'win32';
   try {
     await run(win ? 'cmd.exe' : 'npm', win ? ['/d', '/c', 'npm', '--version'] : ['--version'], { quiet: true });
@@ -46,7 +61,9 @@ export async function npmCommand() {
   const cli = path.join(target, 'package/bin/npm-cli.js');
   if (!existsSync(cli)) {
     console.error('[dsh-pet] npm not found; downloading verified npm 11.6.2...');
-    const response = await fetch('https://registry.npmjs.org/npm/-/npm-11.6.2.tgz', { signal: AbortSignal.timeout(90000) });
+    const response = await fetch('https://registry.npmjs.org/npm/-/npm-11.6.2.tgz', {
+      signal: AbortSignal.timeout(90000),
+    });
     if (!response.ok) throw new Error('npm bootstrap download failed: HTTP ' + response.status);
     const archive = Buffer.from(await response.arrayBuffer());
     const expected = '7iKzNfy8lWYs3zq4oFPa8EXZz5xt9gQNKJZau3B1ErLBb6bF7sBJ00x09485DOvRT2l5Gerbl3VlZNT57MxJVA==';
@@ -60,8 +77,11 @@ export async function npmCommand() {
       const tar = win ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32/tar.exe') : 'tar';
       await run(tar, ['-xzf', file, '-C', staging]);
       if (!existsSync(path.join(staging, 'package/bin/npm-cli.js'))) throw new Error('Invalid npm archive');
-      try { renameSync(staging, target); }
-      catch (error) { if (!existsSync(cli)) throw error; }
+      try {
+        renameSync(staging, target);
+      } catch (error) {
+        if (!existsSync(cli)) throw error;
+      }
     } finally {
       // Only this uniquely created directory under our bootstrap directory is removable.
       if (path.dirname(staging) === base && existsSync(staging)) rmSync(staging, { recursive: true });
@@ -84,10 +104,23 @@ export async function ensureDependencies() {
     }
     const [command, prefix] = await npmCommand();
     console.error('[dsh-pet] Installing runtime dependencies for this Git checkout...');
-    await run(command, [...prefix, 'install', '--omit=dev', '--omit=peer', '--ignore-scripts', '--package-lock=false', '--no-audit', '--no-fund']);
+    await run(command, [
+      ...prefix,
+      'install',
+      '--omit=dev',
+      '--omit=peer',
+      '--ignore-scripts',
+      '--package-lock=false',
+      '--no-audit',
+      '--no-fund',
+    ]);
     if (!available()) throw new Error('Runtime dependencies remain unavailable after npm install');
-  })().catch(error => {
-    throw new Error('桌宠运行依赖安装失败：' + error.message + '\n请检查网络后在启动窗口点击重试，或重新启用插件。');
-  }).finally(() => { pending = undefined; });
+  })()
+    .catch((error) => {
+      throw new Error('桌宠运行依赖安装失败：' + error.message + '\n请检查网络后在启动窗口点击重试，或重新启用插件。');
+    })
+    .finally(() => {
+      pending = undefined;
+    });
   await pending;
 }

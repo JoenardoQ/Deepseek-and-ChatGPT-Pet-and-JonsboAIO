@@ -43,7 +43,12 @@ export interface RawBalanceResult {
 export type PricingTier = 'peak' | 'idle';
 
 /** 已解析的余额视图（展示 + 档位计算用） */
-export interface QuotaWindow { label: string; usedPercent: number; windowMinutes: number; resetsAt?: string; }
+export interface QuotaWindow {
+  label: string;
+  usedPercent: number;
+  windowMinutes: number;
+  resetsAt?: string;
+}
 export interface BalanceView {
   quotaWindows?: QuotaWindow[];
   plan?: string;
@@ -131,10 +136,32 @@ export function toBalanceState(raw: unknown): BalanceState | null {
     for (const item of d.windows) {
       if (!item || typeof item !== 'object') return null;
       const w = item as Record<string, unknown>;
-      if (typeof w.label !== 'string' || typeof w.usedPercent !== 'number' || !Number.isFinite(w.usedPercent) || w.usedPercent < 0 || w.usedPercent > 100 || typeof w.windowMinutes !== 'number' || !Number.isFinite(w.windowMinutes) || w.windowMinutes <= 0) return null;
-      windows.push({ label: w.label, usedPercent: w.usedPercent, windowMinutes: w.windowMinutes, resetsAt: typeof w.resetsAt === 'string' ? w.resetsAt : undefined });
+      if (
+        typeof w.label !== 'string' ||
+        typeof w.usedPercent !== 'number' ||
+        !Number.isFinite(w.usedPercent) ||
+        w.usedPercent < 0 ||
+        w.usedPercent > 100 ||
+        typeof w.windowMinutes !== 'number' ||
+        !Number.isFinite(w.windowMinutes) ||
+        w.windowMinutes <= 0
+      )
+        return null;
+      windows.push({
+        label: w.label,
+        usedPercent: w.usedPercent,
+        windowMinutes: w.windowMinutes,
+        resetsAt: typeof w.resetsAt === 'string' ? w.resetsAt : undefined,
+      });
     }
-    return { provider, shape: 'quota', ok: true, quotaWindows: windows, plan: typeof d.plan === 'string' ? d.plan : undefined, updatedAt: typeof d.updatedAt === 'string' ? d.updatedAt : undefined };
+    return {
+      provider,
+      shape: 'quota',
+      ok: true,
+      quotaWindows: windows,
+      plan: typeof d.plan === 'string' ? d.plan : undefined,
+      updatedAt: typeof d.updatedAt === 'string' ? d.updatedAt : undefined,
+    };
   }
   if (r.shape === 'windows') {
     const monthly = optNum(d.monthly);
@@ -194,7 +221,8 @@ export function toBalanceState(raw: unknown): BalanceState | null {
  *   0 元 → 100%）。没有基准 → undefined（不播档位动画，不替服务商猜一个）
  */
 export function balancePercent(v: BalanceView): number | undefined {
-  if (v.shape === 'quota') return v.quotaWindows?.length ? Math.max(...v.quotaWindows.map(w => w.usedPercent)) : undefined;
+  if (v.shape === 'quota')
+    return v.quotaWindows?.length ? Math.max(...v.quotaWindows.map((w) => w.usedPercent)) : undefined;
   if (v.shape === 'money') {
     const total = Number(v.total);
     const full = Number(v.fullBalance);
@@ -269,7 +297,7 @@ function windowQuotas(v: BalanceView): Record<WindowKey, number | undefined> {
  */
 export function urgentWindow(v: BalanceView): WindowUsage | undefined {
   if (v.shape === 'quota') {
-    const w = v.quotaWindows?.reduce((a,b) => a.usedPercent >= b.usedPercent ? a : b);
+    const w = v.quotaWindows?.reduce((a, b) => (a.usedPercent >= b.usedPercent ? a : b));
     return w ? { label: w.label, percent: w.usedPercent, resetsAt: w.resetsAt } : undefined;
   }
   if (v.shape === 'money') return undefined;

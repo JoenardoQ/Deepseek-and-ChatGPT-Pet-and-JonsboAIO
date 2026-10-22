@@ -3,11 +3,7 @@
   "node": "24.19.0",
   "electron": {
     "version": "43.3.0",
-    "parts": [
-      "electron-win-x64.zip.001",
-      "electron-win-x64.zip.002",
-      "electron-win-x64.zip.003"
-    ],
+    "parts": ["electron-win-x64.zip.001", "electron-win-x64.zip.002", "electron-win-x64.zip.003"],
     "sha256": "ec582c7ff6a6578a4259c62f6acf05bbaa2a8eaa2d56fc835a96c2a59eb65363"
   },
   "dependencies": {

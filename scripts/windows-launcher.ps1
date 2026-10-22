@@ -261,7 +261,7 @@ function Start-Pet {
     Pump
     try{
       $s=Read-State
-      $desktop=$s.activeSources -contains 'chatgpt'
+      $desktop=($s.activeSources -contains 'chatgpt') -or @($s.pets | Where-Object { $_.source -eq 'chatgpt' -and $_.desktop -and $_.ready }).Count -gt 0
       if($desktop){
         if($s.output.usb -eq 'streaming'){Stage '桌宠与屏幕已启动' '画面正在同步。'}
         else{Stage '桌宠已启动' '可在连接设置中连接屏幕、调整方向或处理占用提示。'}

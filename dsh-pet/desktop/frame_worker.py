@@ -39,16 +39,26 @@ class FrameInput:
         self.frame = None
         self.enabled = False
         self.updated_at = 0
+        self.generation = None
+        self.stream_id = None
+        self.rotation = None
 
     def update(self, value, width, height, rotation, now):
         if 'enabled' in value and not isinstance(value['enabled'], bool):
             raise ValueError('Expected boolean screen intent')
+        generation = value.get('generation', self.generation)
+        stream_id = value.get('streamId', self.stream_id)
+        changed = generation != self.generation or stream_id != self.stream_id or rotation != self.rotation
+        if changed:
+            self.frame = None
+        self.generation, self.stream_id, self.rotation = generation, stream_id, rotation
         if 'png' in value:
             self.frame = decode_frame(value['png'], width, height, rotation)
         self.enabled = value.get('enabled', 'png' in value)
         if not self.enabled:
             self.frame = None
         self.updated_at = now
+        return changed
 
     def active(self, now):
         return self.enabled and self.frame is not None and now-self.updated_at <= 8
@@ -84,6 +94,8 @@ def run(config, data_dir):
     session = DeviceSession(config, data_dir, progress=lambda **value: report(**value))
     def report(**value):
         nonlocal last_status
+        value['generation'] = feed.generation
+        value['streamId'] = feed.stream_id
         if value != last_status:
             emit(**value)
             last_status = value
@@ -102,7 +114,14 @@ def run(config, data_dir):
             try:
                 try:
                     value = updates.get_nowait()
-                    feed.update(value,width,height,rotation,time.monotonic())
+                    next_rotation = value.get('rotation', rotation)
+                    if next_rotation not in (0, 90, 180, 270):
+                        raise ValueError('Invalid rotation')
+                    if feed.update(value,width,height,next_rotation,time.monotonic()):
+                        release()
+                        retry_at = 0
+                        waiting_since = 0
+                    rotation = next_rotation
                 except queue.Empty:
                     pass
                 if not feed.active(time.monotonic()) or not config.get('usb',True):

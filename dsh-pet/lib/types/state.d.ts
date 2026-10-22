@@ -31,7 +31,7 @@ export interface StateLeaf {
 /** 全局段（所有端共享一份） */
 export type SectionName = 'balance' | 'workStatus' | 'notify';
 /** 每宠物段（say = 要说的话；anim = 要播的动画名） */
-export type PetLeafName = 'say' | 'anim';
+export type PetLeafName = 'say' | 'anim' | 'character' | 'size';
 /** S 的完整形态（GET /state 的响应体） */
 export interface PollState {
     sections: Record<SectionName, StateLeaf>;
