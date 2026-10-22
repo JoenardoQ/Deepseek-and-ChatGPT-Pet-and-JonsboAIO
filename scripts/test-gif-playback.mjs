@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '../dsh-pet/node_modules/playwright/index.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
+fs.mkdirSync(path.join(root,'.qa'),{recursive:true});
 const server=http.createServer((req,res)=>{
   if(req.url==='/'){res.setHeader('Content-Type','text/html');res.end('<body style="background:#243247"><div id="stage" style="position:relative;width:640px;height:360px"></div><script src="/core.js"></script></body>');return;}
   const rel=req.url==='/core.js'?'dsh-pet/runtime/electron-helper/shared-core.js':decodeURIComponent(req.url.split('?')[0]).slice(1);

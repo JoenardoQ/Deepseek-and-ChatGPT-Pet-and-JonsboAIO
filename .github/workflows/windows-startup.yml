@@ -50,7 +50,10 @@ jobs:
         if: failure()
         with:
           name: source-and-ui-diagnostics
-          path: .qa
+          path: |
+            .qa/*.png
+            dsh-pet/.qa/*.png
+          include-hidden-files: true
           if-no-files-found: ignore
 
   windows:
