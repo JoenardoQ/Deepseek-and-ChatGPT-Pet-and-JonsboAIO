@@ -21,8 +21,8 @@ jobs:
     env:
       DESKTOP_PET_HEADLESS: '1'
       PET_SKIP_RUNTIME_SETUP: '1'
-      PET_DATA_DIR: ${{ runner.temp }}/pet-ci/jonsbo
-      DSH_HOME: ${{ runner.temp }}/pet-ci/dsh
+      PET_DATA_DIR: ${{ github.workspace }}/.qa/ci/jonsbo
+      DSH_HOME: ${{ github.workspace }}/.qa/ci/dsh
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,6 +33,7 @@ jobs:
       - run: npm --prefix dsh-pet ci --ignore-scripts --legacy-peer-deps --no-audit --no-fund
       - run: npm --prefix dsh-pet run typecheck
       - run: npm --prefix dsh-pet run lint
+      - run: npm --prefix dsh-pet run check:openapi
       - run: npm --prefix dsh-pet run format:check
       - run: npm --prefix dsh-pet test
       - run: npm --prefix dsh-pet run build
@@ -61,8 +62,8 @@ jobs:
       DESKTOP_PET_RUN_COLD_TEST: '1'
       PET_SKIP_RUNTIME_SETUP: '1'
       DSH_PET_USE_WINDOWS_BOOTSTRAP: '0'
-      PET_DATA_DIR: ${{ runner.temp }}/pet-ci/jonsbo
-      DSH_HOME: ${{ runner.temp }}/pet-ci/dsh
+      PET_DATA_DIR: ${{ github.workspace }}/.qa/ci/jonsbo
+      DSH_HOME: ${{ github.workspace }}/.qa/ci/dsh
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
