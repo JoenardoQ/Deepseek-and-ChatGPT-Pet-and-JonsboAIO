@@ -32,6 +32,16 @@ export async function status() {
 }
 let starting;
 export async function ensureBridge() {
+  // Short-lived CLI callers can otherwise exit while fetch is between sockets:
+  // AbortSignal.timeout and the detached bridge do not keep Node's loop alive.
+  const keepAlive = setInterval(() => {}, 1000);
+  try {
+    return await ensureBridgeReady();
+  } finally {
+    clearInterval(keepAlive);
+  }
+}
+async function ensureBridgeReady() {
   try {
     let current = await status();
     if (needsUpgrade(current)) throw Error('需要加载当前插件的修复版桥接');

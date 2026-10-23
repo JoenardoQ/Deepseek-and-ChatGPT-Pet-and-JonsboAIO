@@ -26,6 +26,21 @@ function client(port, data, code = 'console.log(JSON.stringify(await c.ensureBri
     child.on('exit', (code) => resolve({ code, out, err }));
   });
 }
+
+test('a short-lived caller stays alive while an unreferenced status request completes', async () => {
+  const result = await client(
+    19499,
+    os.tmpdir(),
+    `
+    globalThis.fetch = () => new Promise(resolve => {
+      setTimeout(() => resolve({ok:true, json:async () => ({service:'dsh-pet-jonsbo',version:4,build:'99.0.0'})}), 50).unref();
+    });
+    console.log(JSON.stringify(await c.ensureBridge()));
+  `,
+  );
+  assert.equal(result.code, 0, result.err);
+  assert.equal(JSON.parse(result.out).build, '99.0.0');
+});
 async function fixture(t, state) {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'pet-migration-test-'));
   mkdirSync(path.join(dir, 'data'));
