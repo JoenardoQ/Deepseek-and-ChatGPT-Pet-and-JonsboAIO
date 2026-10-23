@@ -1,11 +1,11 @@
-// Runtime-only portable package. Building needs Node; running the package does not.
+// Runtime-only portable package. Building needs Node, PowerShell and Python 3.12+; running the package does not.
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { runTar } from "./archive-tools.mjs";
+import { createTarGzip } from "./archive-tools.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = JSON.parse(
   fs.readFileSync(path.join(root, "scripts/windows-launcher.json")),
@@ -128,7 +128,7 @@ fs.writeFileSync(
 const tarball = path.join(dist, profile.artifact.replace(/\.zip$/, ".tgz"));
 const packageFolder = path.join(stage, "package");
 fs.renameSync(folder, packageFolder);
-runTar(["-czf", tarball, "package"], { cwd: stage });
+createTarGzip(tarball, packageFolder);
 const tarHash = crypto
   .createHash("sha256")
   .update(fs.readFileSync(tarball))

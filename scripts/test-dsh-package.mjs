@@ -4,7 +4,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import assert from "node:assert/strict";
 import { fileURLToPath } from "node:url";
-import { runTar } from "./archive-tools.mjs";
+import { listTarGzip, extractTarGzip } from "./archive-tools.mjs";
 const source = fileURLToPath(new URL("../", import.meta.url)),
   profile = JSON.parse(
     fs.readFileSync(path.join(source, "scripts/windows-launcher.json")),
@@ -25,14 +25,15 @@ assert.equal(
 const inventory = JSON.parse(fs.readFileSync(archive + ".files.json", "utf8"));
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "pet-tgz-check-"));
 try {
-  const listing = runTar(["-tzf", archive], { timeout: 30000 });
-  const entries = listing.trim().split(/\r?\n/);
+  const entries = listTarGzip(archive);
   assert.ok(
     entries.every(
-      (p) => p.startsWith("package/") && !/(^|\/)\.\.(\/|$)|^[a-z]:/i.test(p),
+      (p) =>
+        (p === "package" || p.startsWith("package/")) &&
+        !/(^|\/)\.\.(\/|$)|^[a-z]:/i.test(p),
     ),
   );
-  runTar(["-xzf", archive], { cwd: workspace, timeout: 60000 });
+  extractTarGzip(archive, workspace);
   const root = path.join(workspace, "package"),
     pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json")));
   for (const name of [
