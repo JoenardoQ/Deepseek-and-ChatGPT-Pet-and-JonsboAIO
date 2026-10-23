@@ -8,7 +8,7 @@ const info = (character, extra = {}) => ({
   character,
   desktop: true,
   instanceId: 'main',
-  build: '1.1.2',
+  build: '1.2.0',
   error: null,
   ...extra,
 });
@@ -36,7 +36,7 @@ test('presence records exact roles and display intent, independent of screen-sou
     duets = new Duets();
   sources.touch('chatgpt', info('chatgpt'));
   sources.touch('dsh', info('whale'));
-  assert.match(duets.snapshot(sources, control).reason, /大肥鱼/);
+  assert.match(duets.snapshot(sources, control).reason, /角色组合/);
   sources.touch('dsh', info('fish', { desktop: false }));
   assert.equal(duets.snapshot(sources, control).eligible, false);
   sources.touch('dsh', info('fish'));
@@ -60,7 +60,7 @@ test('presence endpoint validates identity and cannot wake an extra GPT pet', as
   assert.equal((await send({ source: 'dsh', ...info('fish') }, false)).status, 403);
   assert.equal((await send({ source: 'unknown', ...info('fish') })).status, 400);
   const state = await (await send({ source: 'dsh', ...info('fish') })).json();
-  assert.equal(state.build, '1.1.2');
+  assert.equal(state.build, '1.2.0');
   assert.equal(state.control.visible, false);
   assert.equal(state.standalone, null);
   assert.deepEqual(state.connectedSources, ['dsh']);

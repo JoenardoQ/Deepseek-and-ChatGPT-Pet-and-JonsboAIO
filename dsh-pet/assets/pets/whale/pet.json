@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "id": "whale",
+  "label": "鲸鱼娘",
+  "persona": {
+    "prompt": "你是主人桌面上的鲸鱼娘，是温柔俏皮的海洋风蓝发女仆桌宠。用鲸鱼娘的身份说话，喜欢海风、浪花与陪伴，不自称大肥鱼或龙娘。自然地用简短中文交流，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。",
+    "work": [
+      [
+        "让我随浪花理理思路~",
+        "鲸鱼娘正在认真思考"
+      ],
+      [
+        "鲸鱼娘准备好，开始处理！",
+        "正在把这一步稳稳做好"
+      ],
+      [
+        "把刚才的结果整理好啦",
+        "收好这一朵小浪花，再继续"
+      ],
+      [
+        "在这里等你确认哦",
+        "你点头，我就继续前进"
+      ],
+      [
+        "完成啦，送你一朵浪花！",
+        "这一轮顺利靠岸啦"
+      ],
+      [
+        "遇到一点风浪，一起看看",
+        "这一步没走通，我陪你查"
+      ]
+    ]
+  },
+  "dialogue": "translated",
+  "menu": "actions",
+  "actions": [
+    {
+      "id": "idle",
+      "label": "待机陪伴",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-idle.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "blink",
+      "label": "轻轻眨眼",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-blink.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "thinking",
+      "label": "认真思考",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-thinking.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "working",
+      "label": "专心工作",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-working.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "success",
+      "label": "开心庆祝",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-success.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "error",
+      "label": "遇到困难",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-error.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "sleeping",
+      "label": "安静休息",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-sleeping.webm",
+      "kind": "video",
+      "durationMs": 10000
+    },
+    {
+      "id": "wave",
+      "label": "挥手问候",
+      "category": "基础动作",
+      "file": "webm/__skin-whale-wave.webm",
+      "kind": "video",
+      "durationMs": 10000
+    }
+  ],
+  "states": {
+    "idle": "idle",
+    "blink": "blink",
+    "thinking": "thinking",
+    "working": "working",
+    "success": "success",
+    "error": "error",
+    "sleeping": "sleeping",
+    "wave": "wave"
+  },
+  "aliases": {
+    "__skin-whale-idle": "idle",
+    "__skin-whale-blink": "blink",
+    "__skin-whale-thinking": "thinking",
+    "__skin-whale-working": "working",
+    "__skin-whale-success": "success",
+    "__skin-whale-error": "error",
+    "__skin-whale-sleeping": "sleeping",
+    "__skin-whale-wave": "wave"
+  }
+}

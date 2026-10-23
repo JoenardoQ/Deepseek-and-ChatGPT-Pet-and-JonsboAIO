@@ -1,6 +1,6 @@
 # 开发与维护
 
-本轮维护保留发行版本 1.1.2 和所有原素材；桥接修订为 r2。版本号来自 `dsh-pet/package.json`，协议与维护修订集中在 `dsh-pet/bridge/version.mjs`。修订号让同一素材版本的旧桥接安全迁移，更新版服务和无关服务不被关闭。
+当前静态图片版本为 1.2.0，已合并多实例和重连维护修复；桥接修订为 r2。版本号来自 `dsh-pet/package.json`，协议与维护修订集中在 `dsh-pet/bridge/version.mjs`。修订号让同一素材版本的旧桥接安全迁移，更新版服务和无关服务不被关闭。
 
 ## 模块边界
 
@@ -47,7 +47,7 @@ $env:DESKTOP_PET_HEADLESS = '1'
 $env:PET_SKIP_RUNTIME_SETUP = '1'
 node --test dsh-pet/test-jonsbo/*.test.mjs test/*.test.mjs
 python -m unittest discover -s dsh-pet/test-jonsbo -p 'test_*.py'
-node scripts/test-gif-playback.mjs all
+node scripts/test-screen-frames.mjs
 node scripts/test-screen-room.mjs
 ```
 

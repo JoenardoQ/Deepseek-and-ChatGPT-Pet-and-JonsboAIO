@@ -1,5 +1,5 @@
 const $ = (id) => document.getElementById(id);
-const roles = { fish: '大肥鱼', whale: '鲸鱼娘', chatgpt: 'ChatGPT 娘' };
+let roles = {};
 const labels = {
   streaming: '正在投屏',
   'waiting-device': '等待 USB 屏幕',
@@ -18,7 +18,7 @@ const labels = {
 let state,
   selectedKey,
   busy = false;
-const scenes = Object.fromEntries([...$('duet').options].map((o) => [o.value, o.textContent]));
+let scenes = Object.fromEntries([...$('duet').options].map((o) => [o.value, o.textContent]));
 const target = (pet) => ({
   source: pet.source,
   ...(pet.instanceId === undefined ? {} : { instanceId: pet.instanceId }),
@@ -39,6 +39,7 @@ async function post(route, body) {
 
 function render(s) {
   state = s;
+  roles = s.roles || roles;
   if (!s.pets.some((p) => p.key === selectedKey)) selectedKey = s.selectedInstance || s.pets[0]?.key;
   const pet = selected();
   const enabled = !!pet?.screen && s.screenOptions.enabled;
@@ -119,6 +120,15 @@ function render(s) {
   $('background-status').textContent = '背景与旋转自动保存；左侧预览保持正向，旋转只应用于实屏。';
   if (document.activeElement !== $('rotation')) $('rotation').value = String(s.screenOptions.rotation);
   $('rotation').disabled = busy;
+  if (s.scenes && JSON.stringify(s.scenes) !== $('duet').dataset.catalog) {
+    $('duet').dataset.catalog = JSON.stringify(s.scenes);
+    $('duet').replaceChildren(
+      ...[{ id: 'auto', label: '自动轮换' }, { id: 'off', label: '关闭互动' }, ...s.scenes].map(
+        (s) => new Option(s.label, s.id),
+      ),
+    );
+    scenes = Object.fromEntries(s.scenes.map((s) => [s.id, s.label]));
+  }
   if (document.activeElement !== $('duet')) $('duet').value = s.duet.mode;
   $('duet').disabled = busy;
   $('duet-status').textContent = s.duet.active

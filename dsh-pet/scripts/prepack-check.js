@@ -119,8 +119,8 @@ if (pkg.dsh?.client?.platform === 'web') ok('dsh.client.web declared');
 else fail('package.json missing dsh.client platform web');
 
 // ---- 6. 表情包图片必须随包发布（配图功能的素材源） ----
-// 坑：scripts/prepare.js 每次发布都会用**硬编码白名单覆盖** package.json 的 files，
-// 只在 package.json 里加一行是无效的 → 这里显式断言，防止再次静默漏发。
+// 发布文件以 package.json 的 files 清单为准，
+// 这里显式断言必需资源目录，防止配置编辑导致静默漏发。
 const memesDir = join(ROOT, 'assets', 'pets', 'fish', 'memes');
 if (Array.isArray(pkg.files) && pkg.files.includes('assets/pets')) ok('files includes assets/pets/fish/memes');
 else fail('package.json files must include assets/pets/fish/memes (meme images would not ship)');

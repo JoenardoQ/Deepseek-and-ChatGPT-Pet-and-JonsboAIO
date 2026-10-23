@@ -26,7 +26,7 @@ PetSprite.prototype.onWorkTick = function onWorkTick(snapshot, tick) {
     // 那段工作动画上。只把当前段改成播完即停：它结束后走 handleEnded → resumeWorkStatusAnim() 返回
     // false → playIdle；工作期间的原生 loop 不受影响。
     if (S.poolIncludes(this.animations.events?.workStatus ?? [], this.anim)) {
-      this.gifPlayer.finishLoop();
+      this.imagePlayer.finishLoop();
       const frontEl = this.front === 0 ? this.videoA : this.videoB;
       if (frontEl) {
         frontEl.loop = false;

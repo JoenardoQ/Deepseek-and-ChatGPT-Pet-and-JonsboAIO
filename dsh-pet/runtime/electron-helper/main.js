@@ -885,6 +885,9 @@ app.whenReady().then(() => {
             viewport: window.innerWidth + 'x' + window.innerHeight,
             dpr: window.devicePixelRatio,
             debug: window.__dshPetDebug || null,
+            imageReady: sprites[0]?.imagePlayer?.ready || false,
+            imageVisible: sprites[0]?.imagePlayer ? getComputedStyle(sprites[0].imagePlayer.canvas).display : null,
+            character: sprites[0]?.character,
             sprites: document.querySelectorAll('.pet-sprite').length,
             errorVisible: document.getElementById('pet-error').classList.contains('visible'),
             errorText: document.getElementById('pet-error').textContent,
@@ -1072,6 +1075,12 @@ app.whenReady().then(() => {
             '[dsh-pet-desktop-helper] smoke interactive round-trip:',
             JSON.stringify({ interactiveIgnoring, passthroughIgnoring }),
           );
+          writeFileSync(
+            smokeOut + '.json',
+            JSON.stringify({ ...dump, interactiveIgnoring, passthroughIgnoring }, null, 2),
+          );
+          await first.webContents.executeJavaScript('sprites.forEach(p => p.closeMenu()); true;');
+          await new Promise((r) => setTimeout(r, 150));
           const image = await first.webContents.capturePage();
           writeFileSync(smokeOut, image.toPNG());
           console.log('[dsh-pet-desktop-helper] smoke capture:', smokeOut);

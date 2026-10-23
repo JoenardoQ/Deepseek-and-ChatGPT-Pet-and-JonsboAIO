@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "method": "built-in image_gen",
+  "reference": "references/reference-1.jpg",
+  "sourceBehavior": [
+    "fish: 106 upstream WebM actions, click/drag/move/work/usage pools",
+    "whale: 8 semantic WebM states using the shared interaction engine"
+  ],
+  "sheets": [
+    {
+      "id": "core",
+      "file": "core.png",
+      "columns": 4,
+      "rows": 2,
+      "actions": [
+        {
+          "id": "idle",
+          "label": "端庄待机",
+          "category": "基础",
+          "index": 0,
+          "pose": "Standing relaxed, hands gently resting in front, soft attentive smile."
+        },
+        {
+          "id": "blink",
+          "label": "俏皮眨眼",
+          "category": "基础",
+          "index": 1,
+          "pose": "Standing with one eye closed in a playful wink, one hand near cheek."
+        },
+        {
+          "id": "wave",
+          "label": "挥手问候",
+          "category": "互动",
+          "index": 2,
+          "pose": "Raising one open hand in a friendly wave, looking at the viewer."
+        },
+        {
+          "id": "shy",
+          "label": "被夸害羞",
+          "category": "互动",
+          "index": 3,
+          "pose": "Blushing, looking slightly aside, shyly holding the edge of one sleeve."
+        },
+        {
+          "id": "thinking",
+          "label": "认真思考",
+          "category": "工作",
+          "index": 4,
+          "pose": "One finger on chin, eyes thoughtfully looking upward, a small blue assistant orb nearby."
+        },
+        {
+          "id": "working",
+          "label": "专心工作",
+          "category": "工作",
+          "index": 5,
+          "pose": "Typing with both hands on a small floating lavender laptop, focused expression."
+        },
+        {
+          "id": "success",
+          "label": "完成庆祝",
+          "category": "工作",
+          "index": 6,
+          "pose": "Small victory V sign, proud warm smile, tail lifted happily."
+        },
+        {
+          "id": "error",
+          "label": "遇到困难",
+          "category": "工作",
+          "index": 7,
+          "pose": "One hand touching forehead, apologetic worried face, wings gently drooping."
+        }
+      ],
+      "prompt": "The reference image is character identity and costume reference. Preserve the SAME adult anime dragon princess: long silver-white hair, ivory horns, lavender eyes, pale lavender wings and long purple tail, the exact same elegant WHITE AND PALE LAVENDER ROSE GOWN, rose hair ornaments and flowing sleeves. No maid costume, no new outfit, no nudity. Clean polished anime illustration with crisp contours, soft cel shading, expressive face and natural hands.\nCreate ONE production sprite ATLAS PNG with a genuinely transparent alpha background, wide canvas, EXACTLY 4 columns by 2 rows of equal square cells, eight full-body poses. Read order left to right, top to bottom. Each character is centered inside its own cell, entire head, horns, wings, tail, props and feet visible, at least 10% empty transparent margin on every side of each cell. No part may cross cell boundaries. Consistent scale across cells. No grid lines, labels, letters, captions, floor, scenery, cast shadows, checkerboard or colored background. These are eight independent STILL poses, not motion interpolation frames.\nCell 1: Standing relaxed, hands gently resting in front, soft attentive smile.\nCell 2: Standing with one eye closed in a playful wink, one hand near cheek.\nCell 3: Raising one open hand in a friendly wave, looking at the viewer.\nCell 4: Blushing, looking slightly aside, shyly holding the edge of one sleeve.\nCell 5: One finger on chin, eyes thoughtfully looking upward, a small blue assistant orb nearby.\nCell 6: Typing with both hands on a small floating lavender laptop, focused expression.\nCell 7: Small victory V sign, proud warm smile, tail lifted happily.\nCell 8: One hand touching forehead, apologetic worried face, wings gently drooping."
+    },
+    {
+      "id": "daily",
+      "file": "daily.png",
+      "columns": 4,
+      "rows": 2,
+      "actions": [
+        {
+          "id": "waiting",
+          "label": "等待确认",
+          "category": "工作",
+          "index": 0,
+          "pose": "Holding a small clipboard toward the viewer, open palm requesting a decision."
+        },
+        {
+          "id": "review",
+          "label": "核对结果",
+          "category": "工作",
+          "index": 1,
+          "pose": "Inspecting a notebook with a quill, carefully checking a completed list with no readable text."
+        },
+        {
+          "id": "balance",
+          "label": "检查用量",
+          "category": "工作",
+          "index": 2,
+          "pose": "Holding a small open coin purse and thoughtfully counting a few glowing tokens."
+        },
+        {
+          "id": "sleeping",
+          "label": "蜷尾小憩",
+          "category": "生活",
+          "index": 3,
+          "pose": "Sitting asleep with knees together, hands on knees, tail curled gently around feet."
+        },
+        {
+          "id": "wake",
+          "label": "睡醒揉眼",
+          "category": "生活",
+          "index": 4,
+          "pose": "Sitting upright and rubbing one eye with a loose fist, sleepy smile."
+        },
+        {
+          "id": "stretch",
+          "label": "放松伸展",
+          "category": "生活",
+          "index": 5,
+          "pose": "Standing and stretching both arms above head, eyes gently closed, wings partly stretched."
+        },
+        {
+          "id": "tea",
+          "label": "捧杯喝茶",
+          "category": "生活",
+          "index": 6,
+          "pose": "Standing holding a porcelain teacup with both hands near lips, relaxed expression."
+        },
+        {
+          "id": "snack",
+          "label": "偷吃点心",
+          "category": "生活",
+          "index": 7,
+          "pose": "Holding a little cookie near mouth, slightly puffed cheeks and a caught-in-the-act smile."
+        }
+      ],
+      "prompt": "The reference image is character identity and costume reference. Preserve the SAME adult anime dragon princess: long silver-white hair, ivory horns, lavender eyes, pale lavender wings and long purple tail, the exact same elegant WHITE AND PALE LAVENDER ROSE GOWN, rose hair ornaments and flowing sleeves. No maid costume, no new outfit, no nudity. Clean polished anime illustration with crisp contours, soft cel shading, expressive face and natural hands.\nCreate ONE production sprite ATLAS PNG with a genuinely transparent alpha background, wide canvas, EXACTLY 4 columns by 2 rows of equal square cells, eight full-body poses. Read order left to right, top to bottom. Each character is centered inside its own cell, entire head, horns, wings, tail, props and feet visible, at least 10% empty transparent margin on every side of each cell. No part may cross cell boundaries. Consistent scale across cells. No grid lines, labels, letters, captions, floor, scenery, cast shadows, checkerboard or colored background. These are eight independent STILL poses, not motion interpolation frames.\nCell 1: Holding a small clipboard toward the viewer, open palm requesting a decision.\nCell 2: Inspecting a notebook with a quill, carefully checking a completed list with no readable text.\nCell 3: Holding a small open coin purse and thoughtfully counting a few glowing tokens.\nCell 4: Sitting asleep with knees together, hands on knees, tail curled gently around feet.\nCell 5: Sitting upright and rubbing one eye with a loose fist, sleepy smile.\nCell 6: Standing and stretching both arms above head, eyes gently closed, wings partly stretched.\nCell 7: Standing holding a porcelain teacup with both hands near lips, relaxed expression.\nCell 8: Holding a little cookie near mouth, slightly puffed cheeks and a caught-in-the-act smile."
+    },
+    {
+      "id": "activity",
+      "file": "activity.png",
+      "columns": 4,
+      "rows": 2,
+      "actions": [
+        {
+          "id": "reading",
+          "label": "安静阅读",
+          "category": "生活",
+          "index": 0,
+          "pose": "Reading an open book held with both hands, absorbed calm expression."
+        },
+        {
+          "id": "garden",
+          "label": "照看花草",
+          "category": "生活",
+          "index": 1,
+          "pose": "Kneeling beside a small flowerpot and tilting a watering can, focused gentle smile."
+        },
+        {
+          "id": "bow",
+          "label": "提裙行礼",
+          "category": "互动",
+          "index": 2,
+          "pose": "Holding both sides of the long skirt, knees slightly bent in an elegant curtsey."
+        },
+        {
+          "id": "walk",
+          "label": "轻步散步",
+          "category": "移动",
+          "index": 3,
+          "pose": "Full-body walking pose in three-quarter view, one foot forward, arms relaxed."
+        },
+        {
+          "id": "run",
+          "label": "轻快小跑",
+          "category": "移动",
+          "index": 4,
+          "pose": "Full-body running pose with bent arms and one knee raised, skirt and hair following naturally."
+        },
+        {
+          "id": "drag",
+          "label": "被提起反应",
+          "category": "互动",
+          "index": 5,
+          "pose": "Surprised airborne pose, feet off the ground, arms spread slightly for balance, eyes wide."
+        },
+        {
+          "id": "magic",
+          "label": "掌心星光",
+          "category": "生活",
+          "index": 6,
+          "pose": "Holding both palms open with a small blue glowing assistant orb above them, delighted expression."
+        },
+        {
+          "id": "play",
+          "label": "休闲游戏",
+          "category": "生活",
+          "index": 7,
+          "pose": "Holding a game controller with both hands, focused playful grin."
+        }
+      ],
+      "prompt": "The reference image is character identity and costume reference. Preserve the SAME adult anime dragon princess: long silver-white hair, ivory horns, lavender eyes, pale lavender wings and long purple tail, the exact same elegant WHITE AND PALE LAVENDER ROSE GOWN, rose hair ornaments and flowing sleeves. No maid costume, no new outfit, no nudity. Clean polished anime illustration with crisp contours, soft cel shading, expressive face and natural hands.\nCreate ONE production sprite ATLAS PNG with a genuinely transparent alpha background, wide canvas, EXACTLY 4 columns by 2 rows of equal square cells, eight full-body poses. Read order left to right, top to bottom. Each character is centered inside its own cell, entire head, horns, wings, tail, props and feet visible, at least 10% empty transparent margin on every side of each cell. No part may cross cell boundaries. Consistent scale across cells. No grid lines, labels, letters, captions, floor, scenery, cast shadows, checkerboard or colored background. These are eight independent STILL poses, not motion interpolation frames.\nCell 1: Reading an open book held with both hands, absorbed calm expression.\nCell 2: Kneeling beside a small flowerpot and tilting a watering can, focused gentle smile.\nCell 3: Holding both sides of the long skirt, knees slightly bent in an elegant curtsey.\nCell 4: Full-body walking pose in three-quarter view, one foot forward, arms relaxed.\nCell 5: Full-body running pose with bent arms and one knee raised, skirt and hair following naturally.\nCell 6: Surprised airborne pose, feet off the ground, arms spread slightly for balance, eyes wide.\nCell 7: Holding both palms open with a small blue glowing assistant orb above them, delighted expression.\nCell 8: Holding a game controller with both hands, focused playful grin."
+    }
+  ]
+}

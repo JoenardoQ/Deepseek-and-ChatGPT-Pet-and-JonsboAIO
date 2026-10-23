@@ -133,7 +133,7 @@ class PetSprite {
     stage.className = 'pet-stage';
     stage.style.transform = 'translateY(' + this.bottomPad + 'px)';
     this.stage = stage;
-    this.gifPlayer = new S.GifPlayer(stage);
+    this.imagePlayer = new S.ImagePosePlayer(stage);
     this.duetAction = null;
     this.videoA = document.createElement('video');
     this.videoA.className = 'pet-video is-front';
@@ -163,7 +163,7 @@ class PetSprite {
 
     stage.appendChild(this.videoA);
     stage.appendChild(this.videoB);
-    stage.appendChild(this.gifPlayer.canvas);
+    stage.appendChild(this.imagePlayer.canvas);
     stage.appendChild(this.hit);
     this.el.appendChild(this.bubble);
     this.bubbleObserver = new ResizeObserver(() => this.fitBubble());
@@ -234,7 +234,7 @@ class PetSprite {
 
   dispose() {
     this.ac.abort();
-    this.gifPlayer.dispose();
+    this.imagePlayer.dispose();
     if (this.bubbleTimer !== null) window.clearTimeout(this.bubbleTimer);
     if (this.whisperTimer !== null) window.clearTimeout(this.whisperTimer);
     if (this.workTimer !== null) window.clearTimeout(this.workTimer);
@@ -362,7 +362,9 @@ class PetSprite {
       // 保证「点击唯一动画」时挤压反馈不丢（与浏览器同构）。
       if (this.pendingSquash) {
         this.pendingSquash = false;
-        this.startSquash(this.front === 0 ? this.videoA : this.videoB);
+        this.startSquash(
+          this.imagePlayer.ready ? this.imagePlayer.canvas : this.front === 0 ? this.videoA : this.videoB,
+        );
       }
       return;
     }
@@ -372,18 +374,25 @@ class PetSprite {
     const el = target;
     if (!el) return;
     const media = S.characterMedia(this.character, next, this.assetRoot, S.ANIMATION_EXT || '.webm');
-    if (media.kind === 'gif') {
+    if (media.kind === 'image') {
       for (const video of [this.videoA, this.videoB]) {
         video.onended = null;
         video.pause();
         video.classList.remove('is-front');
       }
-      this.pendingSquash = false;
-      this.pendingMove = null;
-      this.gifPlayer
-        .play(BASE + media.path, nextOnce, () => this.handleEnded())
+
+      this.imagePlayer
+        .play(BASE + media.path, nextOnce, () => this.handleEnded(), media.cell, media.durationMs)
         .then(() => {
-          if (this.gen === gen) this.pending = null;
+          if (this.gen === gen) {
+            this.pending = null;
+            this.imagePlayer.canvas.style.transform = this.facing === 'right' ? 'scaleX(-1)' : '';
+            if (this.pendingMove) this.startMoveDrive(this.imagePlayer);
+            if (this.pendingSquash) {
+              this.pendingSquash = false;
+              this.startSquash(this.imagePlayer.canvas);
+            }
+          }
         })
         .catch((error) => {
           if (this.gen === gen) {
@@ -393,7 +402,7 @@ class PetSprite {
         });
       return;
     }
-    this.gifPlayer.stop();
+    this.imagePlayer.stop();
     el.src = BASE + media.path;
     el.loop = !nextOnce;
     el.muted = true;

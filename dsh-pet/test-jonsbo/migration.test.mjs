@@ -90,7 +90,7 @@ test('a repaired build retires protocol-compatible 1.0.0 rather than keeping its
   const result = await client(f.port, f.data);
   assert.equal(result.code, 0, result.err);
   assert.equal(f.shutdowns(), 1);
-  assert.equal(JSON.parse(result.out).build, '1.1.2');
+  assert.equal(JSON.parse(result.out).build, '1.2.0');
 });
 
 test('a newer plugin build replaces an older compatible bridge; a newer running build is preserved', async (t) => {
@@ -98,7 +98,7 @@ test('a newer plugin build replaces an older compatible bridge; a newer running 
   const result = await client(old.port, old.data);
   assert.equal(result.code, 0, result.err);
   assert.equal(old.shutdowns(), 1);
-  assert.equal(JSON.parse(result.out).build, '1.1.2');
+  assert.equal(JSON.parse(result.out).build, '1.2.0');
   const newer = await fixture(t, { service: 'dsh-pet-jonsbo', version: 4, build: '99.0.0' });
   const unchanged = await client(newer.port, newer.data);
   assert.equal(unchanged.code, 0, unchanged.err);
@@ -106,7 +106,7 @@ test('a newer plugin build replaces an older compatible bridge; a newer running 
 });
 
 test('same release migrates the known old bridge revision once', async (t) => {
-  const f = await fixture(t, { service: 'dsh-pet-jonsbo', version: 4, build: '1.1.2' });
+  const f = await fixture(t, { service: 'dsh-pet-jonsbo', version: 4, build: '1.2.0' });
   const result = await client(f.port, f.data);
   assert.equal(result.code, 0, result.err);
   assert.equal(f.shutdowns(), 1);

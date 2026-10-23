@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "date": "2026-10-23",
+  "tool": "built-in image_gen; user-authorized Pillow/NumPy alpha cleanup",
+  "method": "Action taxonomy, per-sheet prompts, four transparent still atlases, then connected matte and clipped chroma removal. Surviving RGB pixels are unchanged. No video or GIF encoding.",
+  "cleanup": {
+    "script": "scripts/clean-atlases.py",
+    "report": "art-source/cleanup-report.json"
+  },
+  "prompts": {
+    "actionPlan": "art-source/action-plan.json",
+    "duo": "art-source/duo-prompt.txt",
+    "cleanup": "art-source/cleanup-prompt.txt"
+  },
+  "review": {
+    "technical": "32 cells checked in browser on light and dark backgrounds and in native Electron. See validation notes.",
+    "aesthetic": "White matte and colored speckles removed with a constrained alpha mask; inspected on light/dark backgrounds. Character design is unchanged. This is an engineering visual review, not a claim of user art approval."
+  },
+  "outputs": [
+    {
+      "path": "dsh-pet/assets/pets/chatgpt/images/core.png",
+      "sha256": "93c53933109c0c40bdc81d9716453dc6e135546207fb3ae649a1355a74d7979a",
+      "width": 1774,
+      "height": 887,
+      "columns": 4,
+      "rows": 2
+    },
+    {
+      "path": "dsh-pet/assets/pets/chatgpt/images/daily.png",
+      "sha256": "cdc5bb2c220cd361448342fc09b58e2e4cc0137720aad333846bf9285b2dc012",
+      "width": 1774,
+      "height": 887,
+      "columns": 4,
+      "rows": 2
+    },
+    {
+      "path": "dsh-pet/assets/pets/chatgpt/images/activity.png",
+      "sha256": "0d25189efc6477c5138b24291651c68ce3e38c3706ed9c31c76da70344fc209c",
+      "width": 1774,
+      "height": 887,
+      "columns": 4,
+      "rows": 2
+    },
+    {
+      "path": "dsh-pet/assets/pets/duo/images/scenes.png",
+      "sha256": "670b964396e430f520bff6b82b32a772af4b63c47fa8d2f98ae8acefd5db31fc",
+      "width": 1774,
+      "height": 887,
+      "columns": 4,
+      "rows": 2
+    }
+  ]
+}

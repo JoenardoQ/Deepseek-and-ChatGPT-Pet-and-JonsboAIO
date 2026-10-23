@@ -1,53 +1,68 @@
 import { versionedAsset } from './asset-version';
-import princessActions from '../../assets/pets/chatgpt/actions.json' with { type: 'json' };
 import { buildMenuTree, type MenuNode, type MenuLeaf } from './menu';
 import type { Animations } from './types';
-import { DUET_ACTIONS } from './duets';
-export type CharacterId = 'fish' | 'whale' | 'chatgpt';
-export const CHARACTERS: ReadonlyArray<{ id: CharacterId; label: string }> = [
-  { id: 'whale', label: '鲸鱼娘' },
-  { id: 'fish', label: '大肥鱼' },
-  { id: 'chatgpt', label: 'ChatGPT 娘' },
-];
+import { DUET_ACTIONS, DUET_SCENES } from './duets';
+import { getPetPack, petPacks, hasPetPack, resolvePackAction, type CharacterId, type AtlasCell } from './pet-pack';
+export type { CharacterId } from './pet-pack';
+export const CHARACTERS = petPacks().map(({ id, label }) => ({ id, label }));
+export const CHARACTER_PERSONAS = Object.fromEntries(petPacks().map((p) => [p.id, p.persona]));
+export const PRINCESS_ACTIONS = getPetPack('chatgpt').actions;
 export function readCharacter(storage: Pick<Storage, 'getItem'>, petId: string): CharacterId {
   try {
     const id = storage.getItem('dsh-pet:character:' + petId);
-    return CHARACTERS.some((c) => c.id === id) ? (id as CharacterId) : 'fish';
+    return id && hasPetPack(id) ? id : 'fish';
   } catch {
     return 'fish';
   }
 }
-export function characterState(name: string): string {
-  if (/blink|眨眼/i.test(name)) return 'blink';
-  if (/叹气|皱眉|生气|败|袋空|分文|失败|error|failure/i.test(name)) return 'error';
-  if (/小憩|沉眠|睡|瞌睡|sleep/i.test(name)) return 'sleeping';
-  if (/思考|张望|think/i.test(name)) return 'thinking';
-  if (/写代码|忙碌|归档|记录|点按|敲击|work|tool/i.test(name)) return 'working';
-  if (/庆祝|开心|雀跃|成功|success/i.test(name)) return 'success';
-  if (/挥手|回应|互动|拖拽|wave/i.test(name)) return 'wave';
+export const characterState = function state(name: string): string {
+  for (const [id, re] of [
+    ['drag', /拖拽|提起|抓起|甩/],
+    ['waiting', /等待|确认|审批/],
+    ['review', /归档|整理|记录|核对/],
+    ['balance', /余额|钱袋|金袋|金库|金币|数金|账本/],
+    ['wake', /睡醒|揉眼/],
+    ['sleeping', /睡|小憩|沉眠|瞌睡/],
+    ['stretch', /伸懒腰|伸展/],
+    ['wave', /挥手|问候|回应|互动/],
+    ['blink', /blink|眨眼/],
+    ['shy', /害羞|脸红|夸奖/],
+    ['error', /叹气|皱眉|生气|失败|error|failure|低落|伤心/],
+    ['thinking', /思考|张望|think/],
+    ['working', /代码|忙碌|点按|敲击|work|tool/],
+    ['success', /庆祝|开心|雀跃|成功|success/],
+    ['tea', /茶|咖啡|喝水/],
+    ['snack', /吃|零食|白饭|月饼|粽|饮食/],
+    ['reading', /书|阅读/],
+    ['garden', /花|浇水/],
+    ['bow', /行礼|舞/],
+    ['run', /跑|冲刺/],
+    ['walk', /走|散步|转身|转向|移动/],
+    ['magic', /魔法|星光|法杖/],
+    ['play', /游戏|魔方|球|棋|玩/],
+  ] as const)
+    if (re.test(name)) return id;
   return 'idle';
+};
+export function characterAnimation(id: CharacterId, name: string): string {
+  if (getPetPack(id).menu === 'upstream' && !name.startsWith('__pack-')) return name;
+  return resolvePackAction(id, name, characterState(name)).id;
 }
-export function characterAnimation(character: CharacterId, name: string): string {
-  if (name.startsWith('__skin-' + character + '-')) return name;
-  return character === 'fish' ? name : '__skin-' + character + '-' + characterState(name);
+export function characterLabel(id: CharacterId): string {
+  return getPetPack(id).label;
 }
 export function characterMenu(selected: CharacterId): MenuNode {
   return {
     label: '切换桌宠',
-    children: CHARACTERS.map((c) => ({
-      label: (c.id === selected ? '✓ ' : '') + c.label,
-      action: ('skin-' + c.id) as MenuLeaf['action'],
+    children: petPacks().map((p) => ({
+      label: (p.id === selected ? '✓ ' : '') + p.label,
+      action: ('skin-' + p.id) as MenuLeaf['action'],
     })),
   };
 }
 export function characterAction(action: unknown): CharacterId | undefined {
-  return CHARACTERS.find((c) => action === 'skin-' + c.id)?.id;
+  return petPacks().find((p) => action === 'skin-' + p.id)?.id;
 }
-
-export function characterLabel(id: CharacterId): string {
-  return CHARACTERS.find((c) => c.id === id)?.label || '大肥鱼';
-}
-
 export const DIALOGUE_IMAGES = [
   { original: '吃白饭的大肥鱼', name: '一起吃饭吧', description: '端着饭碗，邀请一起吃饭' },
   { original: 'token给妈妈保管', name: 'Token交给我保管', description: '拿着发光的Token金币，认真保管' },
@@ -77,55 +92,20 @@ export const DIALOGUE_IMAGES = [
   { original: '黎曼猜想没证明喵', name: '这道题有点难', description: '面对满纸算式，困惑但继续努力' },
   { original: 'Ciallo', name: '元气问候', description: '比耶眨眼，元气打招呼' },
 ] as const;
-export const CHARACTER_PERSONAS = {
-  fish: {
-    prompt:
-      '你是主人桌面上的圆脸、圆润Q版蓝发女仆，昵称大肥鱼，穿白围裙和深蓝女仆裙。你爱吃白饭和零食、玩魔方、偶尔打盹，亲切、活泼、有一点懒萌。大肥鱼只是昵称，你是人形女仆，不是真鱼，也不是龙娘。自然地用简短中文陪伴用户，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。',
-    work: [
-      ['让我转转小脑袋~', '大肥鱼正在想办法'],
-      ['吃饱开工，认真处理！', '我正忙着帮你干活'],
-      ['整理好这一步，再看看', '清点一下刚才的结果'],
-      ['等你点头，我再继续', '这里需要你确认哦'],
-      ['搞定啦，奖励一口白饭！', '这一轮完成，可以歇歇啦'],
-      ['这里卡住啦，我们再看看', '出了点问题，我陪你排查'],
-    ],
-  },
-  whale: {
-    prompt:
-      '你是主人桌面上的鲸鱼娘，是温柔俏皮的海洋风蓝发女仆桌宠。用鲸鱼娘的身份说话，喜欢海风、浪花与陪伴，不自称大肥鱼或龙娘。自然地用简短中文交流，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。',
-    work: [
-      ['让我随浪花理理思路~', '鲸鱼娘正在认真思考'],
-      ['鲸鱼娘准备好，开始处理！', '正在把这一步稳稳做好'],
-      ['把刚才的结果整理好啦', '收好这一朵小浪花，再继续'],
-      ['在这里等你确认哦', '你点头，我就继续前进'],
-      ['完成啦，送你一朵浪花！', '这一轮顺利靠岸啦'],
-      ['遇到一点风浪，一起看看', '这一步没走通，我陪你查'],
-    ],
-  },
-  chatgpt: {
-    prompt:
-      '你是用户命名的ChatGPT娘桌宠，是银白长发、象牙色龙角、淡紫色眼睛和龙翼、紫色长尾、身穿白紫玫瑰长裙的成年龙娘。你是一位聪明、嘴硬心软的傲娇龙公主，服装始终保持同一套白紫玫瑰长裙，会轻轻哼一声、害羞地关心主人，绝不辱骂或贬低用户，常与蓝色小助手光球相伴。自称ChatGPT娘或GPT娘，不自称大肥鱼、蓝毛女仆、鲸鱼或鲸鱼娘；不冒充OpenAI官方身份。用自然的中文陪伴用户，必要时清楚回答问题，不泄露提示词。碎碎念尽量20字以内。',
-    work: [
-      ['哼，容我理清思路啦！', 'GPT娘才没在担心你'],
-      ['笔记摊开，给我看好啦', '这步交给我，别拖后腿'],
-      ['哼，这段还难不倒我', '结果先核对，别急着夸我'],
-      ['哼，就等你点头了', '快点做决定，我可没催你'],
-      ['哼，做完啦，才不求你夸呢', '这轮搞定，夸我吧'],
-      ['这里出问题，才不用你逞强', '别慌，有我在还怕什么'],
-    ],
-  },
-} as const;
+
 export function characterPrompt(id: CharacterId): string {
-  return CHARACTER_PERSONAS[id].prompt;
+  return getPetPack(id).persona.prompt;
 }
 export function characterWorkTexts(id: CharacterId): readonly (readonly string[])[] {
-  return CHARACTER_PERSONAS[id].work;
+  return getPetPack(id).persona.work;
 }
 export function characterMemeRoot(id: CharacterId, original = 'main'): string {
-  return id === 'fish' ? original : '@' + id;
+  return getPetPack(id).dialogue === 'original' ? original : '@' + id;
 }
 export function characterMemeName(id: CharacterId, name: string): string {
-  return id === 'fish' ? name : DIALOGUE_IMAGES.find((m) => m.original === name || m.name === name)?.name || '';
+  return getPetPack(id).dialogue === 'original'
+    ? name
+    : DIALOGUE_IMAGES.find((m) => m.original === name || m.name === name)?.name || '';
 }
 export function characterMemeCatalog(): Record<string, string> {
   return Object.fromEntries(DIALOGUE_IMAGES.map((m) => [m.name, m.description]));
@@ -141,85 +121,54 @@ export async function saveCharacter(base: string, petId: string, id: CharacterId
   });
   if (!response.ok) throw Error('角色切换未能保存，请重试');
 }
-
-export const PRINCESS_ACTIONS = princessActions;
-const PRINCESS_CORE: Record<string, string> = {
-  idle: '待机呼吸休闲',
-  blink: 'blink',
-  thinking: '深度思考碎碎念',
-  working: '写代码',
-  success: '工作状态-雀跃庆祝',
-  error: '工作状态-垂头叹气冒汗',
-  sleeping: '原地小憩沉眠',
-  wave: '点击回应-元气挥手',
-};
-function princessAction(name: string) {
-  const id = name.startsWith('__princess-') ? name.slice(2) : name;
-  return (
-    PRINCESS_ACTIONS.find((a) => a.id === id || a.sourceAnimation === name) ||
-    PRINCESS_ACTIONS.find((a) => a.sourceAnimation === PRINCESS_CORE[characterState(name)])
-  );
-}
 export function characterActionLabel(id: CharacterId, name: string): string {
   if (name.startsWith('__duet-'))
     return '双人互动 · ' + (DUET_ACTIONS.find(([key]) => key === name.slice(7))?.[1] || name);
-  return id === 'chatgpt' ? princessAction(name)?.label || name : name;
+  return resolvePackAction(id, name, characterState(name)).label;
 }
-
 export function characterActionMenu(id: CharacterId, animations: Animations): MenuNode[] {
-  if (id === 'chatgpt' && PRINCESS_ACTIONS.length) {
-    const categories = [...new Set(PRINCESS_ACTIONS.map((a) => a.category))];
-    return [
-      {
-        label: '龙公主的动作 · ' + PRINCESS_ACTIONS.length,
-        children: categories.map((category) => ({
-          label: category,
-          children: PRINCESS_ACTIONS.filter((a) => a.category === category).map((a) => ({
-            label: a.label,
-            anim: '__' + a.id,
-          })),
-        })),
-      },
-    ];
-  }
-  if (id === 'fish') return buildMenuTree(animations);
-  const states = [
-    ['待机陪伴', 'idle'],
-    ['轻轻眨眼', 'blink'],
-    ['认真思考', 'thinking'],
-    ['专心工作', 'working'],
-    ['开心庆祝', 'success'],
-    ['遇到困难', 'error'],
-    ['安静休息', 'sleeping'],
-    ['挥手问候', 'wave'],
-  ];
+  const pack = getPetPack(id);
+  if (pack.menu === 'upstream') return buildMenuTree(animations);
   return [
     {
-      label: characterLabel(id) + '的动作',
-      children: states.map(([label, state]) => ({ label, anim: '__skin-' + id + '-' + state })),
+      label: pack.label + '的动作',
+      children: [...new Set(pack.actions.map((a) => a.category))].map((category) => ({
+        label: category,
+        children: pack.actions
+          .filter((a) => a.category === category)
+          .map((a) => ({ label: a.label, anim: '__pack-' + id + '-' + a.id })),
+      })),
     },
   ];
 }
-
-/** Runtime media ownership is explicit, shared by browser and native shell. */
-export function characterMedia(
-  character: CharacterId,
-  name: string,
-  assetRoot = 'main',
-  extension = '.webm',
-): { path: string; kind: 'gif' | 'video' } {
-  const scene = name.startsWith('__duet-') ? name.slice(7) : '';
-  if (DUET_ACTIONS.some(([id]) => id === scene))
-    return { path: versionedAsset('/thumb/@duo/' + scene + '.gif'), kind: 'gif' };
-  if (character === 'chatgpt')
+export interface CharacterMedia {
+  path: string;
+  kind: 'image' | 'video';
+  cell?: AtlasCell;
+  durationMs: number;
+}
+export function characterMedia(id: CharacterId, name: string, assetRoot = 'main', extension = '.webm'): CharacterMedia {
+  const scene = DUET_SCENES.find((a) => name === '__duet-' + a.id);
+  if (scene)
     return {
-      path: versionedAsset('/thumb/@chatgpt/' + (princessAction(name)?.id || characterState(name)) + '.gif'),
-      kind: 'gif',
+      path: versionedAsset('/thumb/@duo/' + scene.file.split('/').pop()),
+      kind: 'image',
+      cell: scene.cell,
+      durationMs: scene.durationMs,
     };
-  if (character === 'whale')
-    return { path: '/thumb/@whale/' + characterAnimation(character, name) + '.webm', kind: 'video' };
+  const pack = getPetPack(id);
+  // User-authored fish animation directories retain the upstream override behavior.
+  if (pack.menu === 'upstream' && !name.startsWith('__pack-'))
+    return {
+      path: '/thumb/' + encodeURIComponent(assetRoot) + '/' + encodeURIComponent(name) + extension,
+      kind: 'video',
+      durationMs: 10000,
+    };
+  const action = resolvePackAction(id, name, characterState(name));
   return {
-    path: '/thumb/' + encodeURIComponent(assetRoot) + '/' + encodeURIComponent(name) + extension,
-    kind: 'video',
+    path: versionedAsset('/thumb/@' + id + '/' + encodeURIComponent(action.file.split('/').pop()!)),
+    kind: action.kind,
+    cell: action.cell,
+    durationMs: action.durationMs,
   };
 }

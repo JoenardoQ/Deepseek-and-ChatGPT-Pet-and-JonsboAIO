@@ -16,6 +16,7 @@
  */
 
 import { findPetInstance, flattenPetList } from './config';
+import { getPetPack, hasPetPack } from '../shared/pet-pack';
 
 /** 点播失败的分类（路由原样透出给调用方） */
 export type AnimFailure = 'bad-request' | 'unknown-pet' | 'unknown-animation';
@@ -108,6 +109,10 @@ export function decideAnim(args: {
   // 所以必须在这里拦住，而不是写进 S 让前端白跑一趟。
   const conf = (findPetInstance(cfg, petId) ?? { conf: cfg.main ?? {} }).conf;
   const allowed = animationNames(conf.animations);
+  const pet = flattenPetList(cfg).find((p) => String(p.id) === petId);
+  const character = String(pet?.character || 'fish');
+  if (hasPetPack(character))
+    allowed.push(...getPetPack(character).actions.map((a) => '__pack-' + character + '-' + a.id));
   if (!allowed.includes(name)) {
     return { ok: false, reason: 'unknown-animation', message: '没有这个动画：' + name };
   }

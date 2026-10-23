@@ -496,7 +496,7 @@ function decideBalanceNotice(state, lastKey, explicit) {
 //#endregion
 //#region package.json
 var name = "dsh-pet";
-var version = "1.1.2";
+var version = "1.2.0";
 var description = "鲸鱼娘、圆润蓝发女仆大肥鱼与 ChatGPT 娘：共用桌宠引擎、独立角色素材、双宿主互动和乔思伯屏幕。";
 var icon = "assets/logo.png";
 var keywords = [
@@ -563,7 +563,7 @@ var scripts = {
 	"start:desktop": "node scripts/start-desktop.mjs",
 	"standalone": "node lib/standalone.js",
 	"dev:mock": "node scripts/dev/mock-server.mjs",
-	"build": "node scripts/prepare.js",
+	"build": "node ../scripts/generate-pack-index.mjs && npm run bundle && npm run build:desktop-core && npm run types",
 	"prepack": "npm run build && npm run typecheck && npm run lint && npm run format:check && node scripts/prepack-check.js && npm run check:openapi",
 	"check:openapi": "node scripts/check-openapi.mjs",
 	"test": "node --experimental-strip-types --import ./scripts/test-register.mjs --test src/**/*.test.ts",
@@ -609,27 +609,27 @@ var peerDependencies = {
 	"react-dom": "^18.2.0"
 };
 var devDependencies = {
-	"@deepseek-ai/cordis": "^4.0.5",
-	"@deepseek-ai/dsh-client-ui-primitives": "^0.2.0-rc.2",
-	"@deepseek-ai/dsh-credentials": "^0.2.0-rc.2",
-	"@deepseek-ai/dsh-home-paths": "^0.2.0-rc.2",
-	"@deepseek-ai/dsh-llm": "^0.2.0-rc.2",
 	"@eslint/js": "^10.0.1",
 	"@types/node": "^26.2.0",
 	"@types/react": "^18.2.0",
 	"@types/react-dom": "^18.2.0",
 	"eslint": "^10.9.0",
 	"eslint-plugin-react-hooks": "^7.1.1",
-	"globals": "^17.13.0",
 	"js-yaml": "^5.4.2",
-	"playwright": "1.63.0",
+	"playwright": "1.64.1",
 	"prettier": "^3.9.6",
 	"react": "^18.2.0",
 	"react-dom": "^18.2.0",
 	"rolldown": "1.0.0-beta.7",
 	"tsdown": "^0.8.0",
 	"typescript": "^5.5.0",
-	"typescript-eslint": "^8.67.0"
+	"typescript-eslint": "^8.67.0",
+	"@deepseek-ai/cordis": "^4.0.4",
+	"@deepseek-ai/dsh-client-ui-primitives": "^0.2.0-rc.1",
+	"@deepseek-ai/dsh-credentials": "^0.2.0-rc.1",
+	"@deepseek-ai/dsh-home-paths": "^0.2.0-rc.1",
+	"@deepseek-ai/dsh-llm": "^0.2.0-rc.1",
+	"globals": "^17.13.0"
 };
 var overrides = { "@keyv/serialize": "1.1.1" };
 var package_default = {
@@ -828,8 +828,8 @@ function buildMenuTree(animations) {
 		["点击回应", animations.clicks],
 		["移动", animations.moves.actions.map((m) => m.name)]
 	];
-	for (const [label, pool] of pools) if (pool.length) groups.push({
-		label,
+	for (const [label$3, pool] of pools) if (pool.length) groups.push({
+		label: label$3,
 		children: pool.map(leaf)
 	});
 	const cats = (animations.categories ?? []).filter((c) => c.actions.length > 0);
@@ -935,12 +935,12 @@ function mountContextMenu(opts) {
 			item.className = "dsh-pet-menu-item";
 			if (isBranchNode(node)) {
 				item.classList.add("dsh-pet-menu-branch");
-				const label = document.createElement("span");
-				label.textContent = node.label;
+				const label$3 = document.createElement("span");
+				label$3.textContent = node.label;
 				const arrow = document.createElement("span");
 				arrow.className = "dsh-pet-menu-arrow";
 				arrow.textContent = "▸";
-				item.appendChild(label);
+				item.appendChild(label$3);
 				item.appendChild(arrow);
 				const childPanel = buildPanel(node.children);
 				item.addEventListener("mouseenter", () => {
@@ -950,9 +950,9 @@ function mountContextMenu(opts) {
 					showPanel(childPanel, item);
 				});
 			} else {
-				const label = document.createElement("span");
-				label.textContent = node.label;
-				item.appendChild(label);
+				const label$3 = document.createElement("span");
+				label$3.textContent = node.label;
+				item.appendChild(label$3);
 				item.addEventListener("click", (e) => {
 					e.preventDefault();
 					e.stopPropagation();
@@ -1781,692 +1781,118 @@ const TOOLTIP_CSS = [
 ].join("");
 
 //#endregion
-//#region assets/pets/chatgpt/actions.json
-var actions_default$1 = [
-	{
-		"id": "princess-001",
-		"sourceAnimation": "三球抛接",
-		"label": "三球抛接",
-		"category": "日常"
-	},
-	{
-		"id": "princess-002",
-		"sourceAnimation": "下五子棋",
-		"label": "下五子棋",
-		"category": "日常"
-	},
-	{
-		"id": "princess-003",
-		"sourceAnimation": "东张西望",
-		"label": "东张西望",
-		"category": "日常"
-	},
-	{
-		"id": "princess-004",
-		"sourceAnimation": "中秋赏月吃月饼",
-		"label": "中秋赏月吃月饼",
-		"category": "节日"
-	},
-	{
-		"id": "princess-005",
-		"sourceAnimation": "优雅女仆舞",
-		"label": "银紫玫瑰宫廷舞",
-		"category": "舞蹈"
-	},
-	{
-		"id": "princess-006",
-		"sourceAnimation": "余额-分文不剩",
-		"label": "公主的小金库见底",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-007",
-		"sourceAnimation": "余额-数金皱眉",
-		"label": "认真盘点几枚金币",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-008",
-		"sourceAnimation": "余额-袋空如洗",
-		"label": "空空的钱袋也要收好",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-009",
-		"sourceAnimation": "余额-金袋叮当",
-		"label": "金币叮当的小得意",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-010",
-		"sourceAnimation": "余额-钱袋如常",
-		"label": "金库账目核对完毕",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-011",
-		"sourceAnimation": "余额-钱袋满溢",
-		"label": "满满金库分你一点点",
-		"category": "小金库"
-	},
-	{
-		"id": "princess-012",
-		"sourceAnimation": "偷吃零食被抓住",
-		"label": "偷吃零食被抓住",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-013",
-		"sourceAnimation": "写代码",
-		"label": "编织星光代码",
-		"category": "工作"
-	},
-	{
-		"id": "princess-014",
-		"sourceAnimation": "写福字",
-		"label": "写福字",
-		"category": "节日"
-	},
-	{
-		"id": "princess-015",
-		"sourceAnimation": "凭空生花",
-		"label": "凭空生花",
-		"category": "日常"
-	},
-	{
-		"id": "princess-016",
-		"sourceAnimation": "动物环绕",
-		"label": "动物环绕",
-		"category": "日常"
-	},
-	{
-		"id": "princess-017",
-		"sourceAnimation": "原地专心玩魔方",
-		"label": "原地专心玩魔方",
-		"category": "日常"
-	},
-	{
-		"id": "princess-018",
-		"sourceAnimation": "原地小憩沉眠",
-		"label": "龙尾围住的小憩",
-		"category": "休息"
-	},
-	{
-		"id": "princess-019",
-		"sourceAnimation": "原地左转奔跑",
-		"label": "公主也会追着你跑",
-		"category": "移动"
-	},
-	{
-		"id": "princess-020",
-		"sourceAnimation": "原地敲击桌面互动",
-		"label": "原地敲击桌面互动",
-		"category": "日常"
-	},
-	{
-		"id": "princess-021",
-		"sourceAnimation": "原地漂浮踏步",
-		"label": "星光浮空小步",
-		"category": "移动"
-	},
-	{
-		"id": "princess-022",
-		"sourceAnimation": "原地跳跃抓碎头顶物品",
-		"label": "原地跳跃抓碎头顶物品",
-		"category": "日常"
-	},
-	{
-		"id": "princess-023",
-		"sourceAnimation": "原地蹲下玩玩具汽车",
-		"label": "拨动小龙木车",
-		"category": "玩乐"
-	},
-	{
-		"id": "princess-024",
-		"sourceAnimation": "原地重力下蹲压缩",
-		"label": "龙翼护住的落地",
-		"category": "回应"
-	},
-	{
-		"id": "princess-025",
-		"sourceAnimation": "变鸽子",
-		"label": "公主的幻鸽魔术",
-		"category": "日常"
-	},
-	{
-		"id": "princess-026",
-		"sourceAnimation": "可爱宅舞",
-		"label": "只跳给你看的舞",
-		"category": "舞蹈"
-	},
-	{
-		"id": "princess-027",
-		"sourceAnimation": "吃Token",
-		"label": "吃Token",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-028",
-		"sourceAnimation": "吃冰淇淋融化",
-		"label": "吃冰淇淋融化",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-029",
-		"sourceAnimation": "吃午餐",
-		"label": "吃午餐",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-030",
-		"sourceAnimation": "吃大闸蟹",
-		"label": "吃大闸蟹",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-031",
-		"sourceAnimation": "吃年糕",
-		"label": "吃年糕",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-032",
-		"sourceAnimation": "吃早餐",
-		"label": "吃早餐",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-033",
-		"sourceAnimation": "吃晚餐",
-		"label": "吃晚餐",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-034",
-		"sourceAnimation": "吃汤圆",
-		"label": "吃汤圆",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-035",
-		"sourceAnimation": "吃白饭",
-		"label": "吃白饭",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-036",
-		"sourceAnimation": "吃粽子",
-		"label": "吃粽子",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-037",
-		"sourceAnimation": "吃糖葫芦",
-		"label": "吃糖葫芦",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-038",
-		"sourceAnimation": "吃腊八粥",
-		"label": "吃腊八粥",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-039",
-		"sourceAnimation": "吃西瓜",
-		"label": "吃西瓜",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-040",
-		"sourceAnimation": "吃重阳糕",
-		"label": "吃重阳糕",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-041",
-		"sourceAnimation": "吃长寿面",
-		"label": "吃长寿面",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-042",
-		"sourceAnimation": "吃青团",
-		"label": "吃青团",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-043",
-		"sourceAnimation": "吃饺子",
-		"label": "吃饺子",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-044",
-		"sourceAnimation": "吹气球",
-		"label": "吹气球",
-		"category": "日常"
-	},
-	{
-		"id": "princess-045",
-		"sourceAnimation": "吹笛子",
-		"label": "吹笛子",
-		"category": "日常"
-	},
-	{
-		"id": "princess-046",
-		"sourceAnimation": "哈欠连天",
-		"label": "哈欠连天",
-		"category": "日常"
-	},
-	{
-		"id": "princess-047",
-		"sourceAnimation": "堆雪人",
-		"label": "堆雪人",
-		"category": "节日"
-	},
-	{
-		"id": "princess-048",
-		"sourceAnimation": "大口吃零食",
-		"label": "大口吃零食",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-049",
-		"sourceAnimation": "女仆屈膝礼仪",
-		"label": "公主的端庄问候",
-		"category": "礼仪"
-	},
-	{
-		"id": "princess-050",
-		"sourceAnimation": "小幅度原地360度旋转展示",
-		"label": "银紫长裙的回旋",
-		"category": "舞蹈"
-	},
-	{
-		"id": "princess-051",
-		"sourceAnimation": "小提琴演奏",
-		"label": "小提琴演奏",
-		"category": "日常"
-	},
-	{
-		"id": "princess-052",
-		"sourceAnimation": "工作状态-原地踱步张望",
-		"label": "等你回来才不是担心",
-		"category": "工作"
-	},
-	{
-		"id": "princess-053",
-		"sourceAnimation": "工作状态-垂头叹气冒汗",
-		"label": "叉腰研究小故障",
-		"category": "工作"
-	},
-	{
-		"id": "princess-054",
-		"sourceAnimation": "工作状态-忙碌点按",
-		"label": "专心批阅魔法终端",
-		"category": "工作"
-	},
-	{
-		"id": "princess-055",
-		"sourceAnimation": "工作状态-思考冒泡",
-		"label": "星光里理清思路",
-		"category": "工作"
-	},
-	{
-		"id": "princess-056",
-		"sourceAnimation": "工作状态-清点归档",
-		"label": "整理公主的星光卷轴",
-		"category": "工作"
-	},
-	{
-		"id": "princess-057",
-		"sourceAnimation": "工作状态-雀跃庆祝",
-		"label": "藏不住的得意",
-		"category": "工作"
-	},
-	{
-		"id": "princess-058",
-		"sourceAnimation": "待机呼吸休闲",
-		"label": "裙边轻提，等你夸奖",
-		"category": "待机"
-	},
-	{
-		"id": "princess-059",
-		"sourceAnimation": "悠闲哼歌",
-		"label": "悠闲哼歌",
-		"category": "日常"
-	},
-	{
-		"id": "princess-060",
-		"sourceAnimation": "扑克魔术",
-		"label": "扑克魔术",
-		"category": "日常"
-	},
-	{
-		"id": "princess-061",
-		"sourceAnimation": "打瞌睡被惊醒",
-		"label": "才没有偷偷打盹",
-		"category": "休息"
-	},
-	{
-		"id": "princess-062",
-		"sourceAnimation": "抽陀螺",
-		"label": "抽陀螺",
-		"category": "日常"
-	},
-	{
-		"id": "princess-063",
-		"sourceAnimation": "拆礼物",
-		"label": "拆礼物",
-		"category": "日常"
-	},
-	{
-		"id": "princess-064",
-		"sourceAnimation": "插茱萸赏菊",
-		"label": "插茱萸赏菊",
-		"category": "节日"
-	},
-	{
-		"id": "princess-065",
-		"sourceAnimation": "摇扇纳凉",
-		"label": "摇扇纳凉",
-		"category": "日常"
-	},
-	{
-		"id": "princess-066",
-		"sourceAnimation": "撸猫",
-		"label": "撸猫",
-		"category": "日常"
-	},
-	{
-		"id": "princess-067",
-		"sourceAnimation": "收红包",
-		"label": "收红包",
-		"category": "节日"
-	},
-	{
-		"id": "princess-068",
-		"sourceAnimation": "放孔明灯",
-		"label": "放孔明灯",
-		"category": "节日"
-	},
-	{
-		"id": "princess-069",
-		"sourceAnimation": "放河灯",
-		"label": "放河灯",
-		"category": "节日"
-	},
-	{
-		"id": "princess-070",
-		"sourceAnimation": "放烟花",
-		"label": "放烟花",
-		"category": "节日"
-	},
-	{
-		"id": "princess-071",
-		"sourceAnimation": "放风筝",
-		"label": "放风筝",
-		"category": "节日"
-	},
-	{
-		"id": "princess-072",
-		"sourceAnimation": "整体换装试色",
-		"label": "同一长裙的星辉展示",
-		"category": "舞蹈"
-	},
-	{
-		"id": "princess-073",
-		"sourceAnimation": "是啊，吃什么",
-		"label": "今天想陪你吃什么",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-074",
-		"sourceAnimation": "晨间刷牙",
-		"label": "晨间刷牙",
-		"category": "日常"
-	},
-	{
-		"id": "princess-075",
-		"sourceAnimation": "涮火锅",
-		"label": "涮火锅",
-		"category": "饮食"
-	},
-	{
-		"id": "princess-076",
-		"sourceAnimation": "深度思考碎碎念",
-		"label": "公主的认真推演",
-		"category": "工作"
-	},
-	{
-		"id": "princess-077",
-		"sourceAnimation": "点击回应-傲娇生气",
-		"label": "哼，才没有生气",
-		"category": "回应"
-	},
-	{
-		"id": "princess-078",
-		"sourceAnimation": "点击回应-元气挥手",
-		"label": "勉强向你挥挥手",
-		"category": "回应"
-	},
-	{
-		"id": "princess-079",
-		"sourceAnimation": "点击回应-害羞惊讶",
-		"label": "被夸奖后的慌张",
-		"category": "回应"
-	},
-	{
-		"id": "princess-080",
-		"sourceAnimation": "点击回应-开心跃动",
-		"label": "裙摆里的小小欢喜",
-		"category": "回应"
-	},
-	{
-		"id": "princess-081",
-		"sourceAnimation": "点击回应-挠痒咯咯笑",
-		"label": "不许再挠啦",
-		"category": "回应"
-	},
-	{
-		"id": "princess-082",
-		"sourceAnimation": "照镜子",
-		"label": "照镜子",
-		"category": "日常"
-	},
-	{
-		"id": "princess-083",
-		"sourceAnimation": "玩水枪",
-		"label": "玩水枪",
-		"category": "日常"
-	},
-	{
-		"id": "princess-084",
-		"sourceAnimation": "玩游戏气急败坏",
-		"label": "玩游戏气急败坏",
-		"category": "日常"
-	},
-	{
-		"id": "princess-085",
-		"sourceAnimation": "用鲸鱼尾巴拍打地面",
-		"label": "龙尾轻叩地板",
-		"category": "魔法"
-	},
-	{
-		"id": "princess-086",
-		"sourceAnimation": "碎碎念-发呆碎碎念",
-		"label": "碎碎念-发呆碎碎念",
-		"category": "日常"
-	},
-	{
-		"id": "princess-087",
-		"sourceAnimation": "碎碎念-对屏碎碎念",
-		"label": "碎碎念-对屏碎碎念",
-		"category": "日常"
-	},
-	{
-		"id": "princess-088",
-		"sourceAnimation": "碎碎念-擦桌碎碎念",
-		"label": "碎碎念-擦桌碎碎念",
-		"category": "日常"
-	},
-	{
-		"id": "princess-089",
-		"sourceAnimation": "穿针乞巧",
-		"label": "穿针乞巧",
-		"category": "节日"
-	},
-	{
-		"id": "princess-090",
-		"sourceAnimation": "舞狮头",
-		"label": "舞狮头",
-		"category": "节日"
-	},
-	{
-		"id": "princess-091",
-		"sourceAnimation": "荡秋千",
-		"label": "荡秋千",
-		"category": "日常"
-	},
-	{
-		"id": "princess-092",
-		"sourceAnimation": "萌化小幽灵",
-		"label": "萌化小幽灵",
-		"category": "日常"
-	},
-	{
-		"id": "princess-093",
-		"sourceAnimation": "蓝鲸现世",
-		"label": "小龙幻影降临",
-		"category": "魔法"
-	},
-	{
-		"id": "princess-094",
-		"sourceAnimation": "蝴蝶蜜蜂环绕头顶开花",
-		"label": "蝴蝶蜜蜂环绕头顶开花",
-		"category": "日常"
-	},
-	{
-		"id": "princess-095",
-		"sourceAnimation": "螃蟹走路",
-		"label": "假装路过的侧步",
-		"category": "移动"
-	},
-	{
-		"id": "princess-096",
-		"sourceAnimation": "被吓一跳",
-		"label": "被吓一跳",
-		"category": "日常"
-	},
-	{
-		"id": "princess-097",
-		"sourceAnimation": "被落叶淹没",
-		"label": "被落叶淹没",
-		"category": "日常"
-	},
-	{
-		"id": "princess-098",
-		"sourceAnimation": "被鼠标拖拽悬空反馈",
-		"label": "被拎起的龙公主",
-		"category": "回应"
-	},
-	{
-		"id": "princess-099",
-		"sourceAnimation": "装点圣诞树",
-		"label": "装点圣诞树",
-		"category": "节日"
-	},
-	{
-		"id": "princess-100",
-		"sourceAnimation": "讨糖南瓜灯",
-		"label": "讨糖南瓜灯",
-		"category": "节日"
-	},
-	{
-		"id": "princess-101",
-		"sourceAnimation": "超大伸懒腰",
-		"label": "超大伸懒腰",
-		"category": "日常"
-	},
-	{
-		"id": "princess-102",
-		"sourceAnimation": "踢毽子",
-		"label": "踢毽子",
-		"category": "日常"
-	},
-	{
-		"id": "princess-103",
-		"sourceAnimation": "轻快摇摆舞",
-		"label": "轻快摇摆舞",
-		"category": "日常"
-	},
-	{
-		"id": "princess-104",
-		"sourceAnimation": "轻快记录",
-		"label": "轻快记录",
-		"category": "日常"
-	},
-	{
-		"id": "princess-105",
-		"sourceAnimation": "骑木马",
-		"label": "骑木马",
-		"category": "日常"
-	},
-	{
-		"id": "princess-106",
-		"sourceAnimation": "鲸鱼吐泡泡特效",
-		"label": "龙息里的星光泡泡",
-		"category": "魔法"
-	},
-	{
-		"id": "princess-107",
-		"sourceAnimation": "blink",
-		"label": "悄悄眨眼看向你",
-		"category": "回应"
-	}
-];
-
-//#endregion
 //#region assets/pets/duo/actions.json
 var actions_default = [
 	{
 		"id": "boxing",
-		"label": "拳击"
+		"label": "拳击",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 0
+		}
 	},
 	{
 		"id": "volleyball",
-		"label": "排球"
+		"label": "排球",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 1
+		}
 	},
 	{
 		"id": "running",
-		"label": "赛跑"
+		"label": "赛跑",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 2
+		}
 	},
 	{
 		"id": "shopping",
-		"label": "逛街"
+		"label": "逛街",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 3
+		}
 	},
 	{
 		"id": "sunset",
-		"label": "看日落"
+		"label": "看日落",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 4
+		}
 	},
 	{
 		"id": "gardening",
-		"label": "浇花"
+		"label": "浇花",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 5
+		}
 	},
 	{
 		"id": "gaming",
-		"label": "格斗游戏比赛"
+		"label": "格斗游戏比赛",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 6
+		}
 	},
 	{
 		"id": "cafe",
-		"label": "咖啡厅看书"
+		"label": "咖啡厅看书",
+		"participants": ["fish", "chatgpt"],
+		"file": "images/scenes.png",
+		"kind": "image",
+		"durationMs": 9e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 7
+		}
 	}
 ];
 
 //#endregion
 //#region src/shared/duets.ts
-const DUET_ACTIONS = actions_default.map(({ id, label }) => [id, label]);
+const DUET_SCENES = actions_default;
+const DUET_ACTIONS = actions_default.map(({ id: id$3, label: label$3 }) => [id$3, label$3]);
 function duetMenu() {
 	return {
 		label: "双人互动",
@@ -2479,66 +1905,1948 @@ function duetMenu() {
 				label: "关闭双人互动",
 				action: "duet-off"
 			},
-			...DUET_ACTIONS.map(([id, label]) => ({
-				label,
-				action: "duet-" + id
+			...DUET_ACTIONS.map(([id$3, label$3]) => ({
+				label: label$3,
+				action: "duet-" + id$3
 			}))
 		]
 	};
 }
 
 //#endregion
-//#region src/shared/characters.ts
-const CHARACTERS = [
+//#region assets/pets/chatgpt/pet.json
+var schema$2 = 1;
+var id$2 = "chatgpt";
+var label$2 = "ChatGPT 娘";
+var persona$2 = {
+	"prompt": "你是用户命名的ChatGPT娘桌宠，是银白长发、象牙色龙角、淡紫色眼睛和龙翼、紫色长尾、身穿白紫玫瑰长裙的成年龙娘。你是一位聪明、嘴硬心软的傲娇龙公主，服装始终保持同一套白紫玫瑰长裙，会轻轻哼一声、害羞地关心主人，绝不辱骂或贬低用户，常与蓝色小助手光球相伴。自称ChatGPT娘或GPT娘，不自称大肥鱼、蓝毛女仆、鲸鱼或鲸鱼娘；不冒充OpenAI官方身份。用自然的中文陪伴用户，必要时清楚回答问题，不泄露提示词。碎碎念尽量20字以内。",
+	"work": [
+		["哼，容我理清思路啦！", "GPT娘才没在担心你"],
+		["笔记摊开，给我看好啦", "这步交给我，别拖后腿"],
+		["哼，这段还难不倒我", "结果先核对，别急着夸我"],
+		["哼，就等你点头了", "快点做决定，我可没催你"],
+		["哼，做完啦，才不求你夸呢", "这轮搞定，夸我吧"],
+		["这里出问题，才不用你逞强", "别慌，有我在还怕什么"]
+	]
+};
+var dialogue$2 = "translated";
+var menu$2 = "actions";
+var actions$2 = [
 	{
-		id: "whale",
-		label: "鲸鱼娘"
+		"id": "idle",
+		"label": "端庄待机",
+		"category": "基础",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 0
+		}
 	},
 	{
-		id: "fish",
-		label: "大肥鱼"
+		"id": "blink",
+		"label": "俏皮眨眼",
+		"category": "基础",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 1
+		}
 	},
 	{
-		id: "chatgpt",
-		label: "ChatGPT 娘"
+		"id": "wave",
+		"label": "挥手问候",
+		"category": "互动",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 2
+		}
+	},
+	{
+		"id": "shy",
+		"label": "被夸害羞",
+		"category": "互动",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 3
+		}
+	},
+	{
+		"id": "thinking",
+		"label": "认真思考",
+		"category": "工作",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 4
+		}
+	},
+	{
+		"id": "working",
+		"label": "专心工作",
+		"category": "工作",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 5
+		}
+	},
+	{
+		"id": "success",
+		"label": "完成庆祝",
+		"category": "工作",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 6
+		}
+	},
+	{
+		"id": "error",
+		"label": "遇到困难",
+		"category": "工作",
+		"file": "images/core.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 7
+		}
+	},
+	{
+		"id": "waiting",
+		"label": "等待确认",
+		"category": "工作",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 0
+		}
+	},
+	{
+		"id": "review",
+		"label": "核对结果",
+		"category": "工作",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 1
+		}
+	},
+	{
+		"id": "balance",
+		"label": "检查用量",
+		"category": "工作",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 2
+		}
+	},
+	{
+		"id": "sleeping",
+		"label": "蜷尾小憩",
+		"category": "生活",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 3
+		}
+	},
+	{
+		"id": "wake",
+		"label": "睡醒揉眼",
+		"category": "生活",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 4
+		}
+	},
+	{
+		"id": "stretch",
+		"label": "放松伸展",
+		"category": "生活",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 5
+		}
+	},
+	{
+		"id": "tea",
+		"label": "捧杯喝茶",
+		"category": "生活",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 6
+		}
+	},
+	{
+		"id": "snack",
+		"label": "偷吃点心",
+		"category": "生活",
+		"file": "images/daily.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 7
+		}
+	},
+	{
+		"id": "reading",
+		"label": "安静阅读",
+		"category": "生活",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 0
+		}
+	},
+	{
+		"id": "garden",
+		"label": "照看花草",
+		"category": "生活",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 1
+		}
+	},
+	{
+		"id": "bow",
+		"label": "提裙行礼",
+		"category": "互动",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 2
+		}
+	},
+	{
+		"id": "walk",
+		"label": "轻步散步",
+		"category": "移动",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 1e4,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 3
+		}
+	},
+	{
+		"id": "run",
+		"label": "轻快小跑",
+		"category": "移动",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 1e4,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 4
+		}
+	},
+	{
+		"id": "drag",
+		"label": "被提起反应",
+		"category": "互动",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 5
+		}
+	},
+	{
+		"id": "magic",
+		"label": "掌心星光",
+		"category": "生活",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 6
+		}
+	},
+	{
+		"id": "play",
+		"label": "休闲游戏",
+		"category": "生活",
+		"file": "images/activity.png",
+		"kind": "image",
+		"durationMs": 4e3,
+		"cell": {
+			"columns": 4,
+			"rows": 2,
+			"index": 7
+		}
 	}
 ];
+var states$2 = {
+	"idle": "idle",
+	"blink": "blink",
+	"wave": "wave",
+	"shy": "shy",
+	"thinking": "thinking",
+	"working": "working",
+	"success": "success",
+	"error": "error",
+	"waiting": "waiting",
+	"review": "review",
+	"balance": "balance",
+	"sleeping": "sleeping",
+	"wake": "wake",
+	"stretch": "stretch",
+	"tea": "tea",
+	"snack": "snack",
+	"reading": "reading",
+	"garden": "garden",
+	"bow": "bow",
+	"walk": "walk",
+	"run": "run",
+	"drag": "drag",
+	"magic": "magic",
+	"play": "play"
+};
+var aliases$2 = {
+	"三球抛接": "play",
+	"princess-001": "play",
+	"__princess-001": "play",
+	"下五子棋": "play",
+	"princess-002": "play",
+	"__princess-002": "play",
+	"东张西望": "idle",
+	"princess-003": "idle",
+	"__princess-003": "idle",
+	"中秋赏月吃月饼": "snack",
+	"princess-004": "snack",
+	"__princess-004": "snack",
+	"优雅女仆舞": "bow",
+	"princess-005": "bow",
+	"__princess-005": "bow",
+	"余额-分文不剩": "balance",
+	"princess-006": "balance",
+	"__princess-006": "balance",
+	"余额-数金皱眉": "balance",
+	"princess-007": "balance",
+	"__princess-007": "balance",
+	"余额-袋空如洗": "balance",
+	"princess-008": "balance",
+	"__princess-008": "balance",
+	"余额-金袋叮当": "balance",
+	"princess-009": "balance",
+	"__princess-009": "balance",
+	"余额-钱袋如常": "balance",
+	"princess-010": "balance",
+	"__princess-010": "balance",
+	"余额-钱袋满溢": "balance",
+	"princess-011": "balance",
+	"__princess-011": "balance",
+	"偷吃零食被抓住": "snack",
+	"princess-012": "snack",
+	"__princess-012": "snack",
+	"写代码": "working",
+	"princess-013": "working",
+	"__princess-013": "working",
+	"写福字": "idle",
+	"princess-014": "idle",
+	"__princess-014": "idle",
+	"凭空生花": "garden",
+	"princess-015": "garden",
+	"__princess-015": "garden",
+	"动物环绕": "idle",
+	"princess-016": "idle",
+	"__princess-016": "idle",
+	"原地专心玩魔方": "play",
+	"princess-017": "play",
+	"__princess-017": "play",
+	"原地小憩沉眠": "sleeping",
+	"princess-018": "sleeping",
+	"__princess-018": "sleeping",
+	"原地左转奔跑": "run",
+	"princess-019": "run",
+	"__princess-019": "run",
+	"原地敲击桌面互动": "wave",
+	"princess-020": "wave",
+	"__princess-020": "wave",
+	"原地漂浮踏步": "idle",
+	"princess-021": "idle",
+	"__princess-021": "idle",
+	"原地跳跃抓碎头顶物品": "idle",
+	"princess-022": "idle",
+	"__princess-022": "idle",
+	"原地蹲下玩玩具汽车": "play",
+	"princess-023": "play",
+	"__princess-023": "play",
+	"原地重力下蹲压缩": "idle",
+	"princess-024": "idle",
+	"__princess-024": "idle",
+	"变鸽子": "idle",
+	"princess-025": "idle",
+	"__princess-025": "idle",
+	"可爱宅舞": "bow",
+	"princess-026": "bow",
+	"__princess-026": "bow",
+	"吃Token": "snack",
+	"princess-027": "snack",
+	"__princess-027": "snack",
+	"吃冰淇淋融化": "snack",
+	"princess-028": "snack",
+	"__princess-028": "snack",
+	"吃午餐": "snack",
+	"princess-029": "snack",
+	"__princess-029": "snack",
+	"吃大闸蟹": "snack",
+	"princess-030": "snack",
+	"__princess-030": "snack",
+	"吃年糕": "snack",
+	"princess-031": "snack",
+	"__princess-031": "snack",
+	"吃早餐": "snack",
+	"princess-032": "snack",
+	"__princess-032": "snack",
+	"吃晚餐": "snack",
+	"princess-033": "snack",
+	"__princess-033": "snack",
+	"吃汤圆": "snack",
+	"princess-034": "snack",
+	"__princess-034": "snack",
+	"吃白饭": "snack",
+	"princess-035": "snack",
+	"__princess-035": "snack",
+	"吃粽子": "snack",
+	"princess-036": "snack",
+	"__princess-036": "snack",
+	"吃糖葫芦": "snack",
+	"princess-037": "snack",
+	"__princess-037": "snack",
+	"吃腊八粥": "snack",
+	"princess-038": "snack",
+	"__princess-038": "snack",
+	"吃西瓜": "snack",
+	"princess-039": "snack",
+	"__princess-039": "snack",
+	"吃重阳糕": "snack",
+	"princess-040": "snack",
+	"__princess-040": "snack",
+	"吃长寿面": "snack",
+	"princess-041": "snack",
+	"__princess-041": "snack",
+	"吃青团": "snack",
+	"princess-042": "snack",
+	"__princess-042": "snack",
+	"吃饺子": "snack",
+	"princess-043": "snack",
+	"__princess-043": "snack",
+	"吹气球": "play",
+	"princess-044": "play",
+	"__princess-044": "play",
+	"吹笛子": "idle",
+	"princess-045": "idle",
+	"__princess-045": "idle",
+	"哈欠连天": "idle",
+	"princess-046": "idle",
+	"__princess-046": "idle",
+	"堆雪人": "idle",
+	"princess-047": "idle",
+	"__princess-047": "idle",
+	"大口吃零食": "snack",
+	"princess-048": "snack",
+	"__princess-048": "snack",
+	"女仆屈膝礼仪": "idle",
+	"princess-049": "idle",
+	"__princess-049": "idle",
+	"小幅度原地360度旋转展示": "idle",
+	"princess-050": "idle",
+	"__princess-050": "idle",
+	"小提琴演奏": "idle",
+	"princess-051": "idle",
+	"__princess-051": "idle",
+	"工作状态-原地踱步张望": "thinking",
+	"princess-052": "thinking",
+	"__princess-052": "thinking",
+	"工作状态-垂头叹气冒汗": "error",
+	"princess-053": "error",
+	"__princess-053": "error",
+	"工作状态-忙碌点按": "working",
+	"princess-054": "working",
+	"__princess-054": "working",
+	"工作状态-思考冒泡": "thinking",
+	"princess-055": "thinking",
+	"__princess-055": "thinking",
+	"工作状态-清点归档": "review",
+	"princess-056": "review",
+	"__princess-056": "review",
+	"工作状态-雀跃庆祝": "success",
+	"princess-057": "success",
+	"__princess-057": "success",
+	"待机呼吸休闲": "idle",
+	"princess-058": "idle",
+	"__princess-058": "idle",
+	"悠闲哼歌": "idle",
+	"princess-059": "idle",
+	"__princess-059": "idle",
+	"扑克魔术": "idle",
+	"princess-060": "idle",
+	"__princess-060": "idle",
+	"打瞌睡被惊醒": "sleeping",
+	"princess-061": "sleeping",
+	"__princess-061": "sleeping",
+	"抽陀螺": "idle",
+	"princess-062": "idle",
+	"__princess-062": "idle",
+	"拆礼物": "idle",
+	"princess-063": "idle",
+	"__princess-063": "idle",
+	"插茱萸赏菊": "idle",
+	"princess-064": "idle",
+	"__princess-064": "idle",
+	"摇扇纳凉": "idle",
+	"princess-065": "idle",
+	"__princess-065": "idle",
+	"撸猫": "idle",
+	"princess-066": "idle",
+	"__princess-066": "idle",
+	"收红包": "idle",
+	"princess-067": "idle",
+	"__princess-067": "idle",
+	"放孔明灯": "idle",
+	"princess-068": "idle",
+	"__princess-068": "idle",
+	"放河灯": "idle",
+	"princess-069": "idle",
+	"__princess-069": "idle",
+	"放烟花": "garden",
+	"princess-070": "garden",
+	"__princess-070": "garden",
+	"放风筝": "idle",
+	"princess-071": "idle",
+	"__princess-071": "idle",
+	"整体换装试色": "idle",
+	"princess-072": "idle",
+	"__princess-072": "idle",
+	"是啊，吃什么": "snack",
+	"princess-073": "snack",
+	"__princess-073": "snack",
+	"晨间刷牙": "idle",
+	"princess-074": "idle",
+	"__princess-074": "idle",
+	"涮火锅": "idle",
+	"princess-075": "idle",
+	"__princess-075": "idle",
+	"深度思考碎碎念": "thinking",
+	"princess-076": "thinking",
+	"__princess-076": "thinking",
+	"点击回应-傲娇生气": "wave",
+	"princess-077": "wave",
+	"__princess-077": "wave",
+	"点击回应-元气挥手": "wave",
+	"princess-078": "wave",
+	"__princess-078": "wave",
+	"点击回应-害羞惊讶": "wave",
+	"princess-079": "wave",
+	"__princess-079": "wave",
+	"点击回应-开心跃动": "wave",
+	"princess-080": "wave",
+	"__princess-080": "wave",
+	"点击回应-挠痒咯咯笑": "wave",
+	"princess-081": "wave",
+	"__princess-081": "wave",
+	"照镜子": "idle",
+	"princess-082": "idle",
+	"__princess-082": "idle",
+	"玩水枪": "play",
+	"princess-083": "play",
+	"__princess-083": "play",
+	"玩游戏气急败坏": "play",
+	"princess-084": "play",
+	"__princess-084": "play",
+	"用鲸鱼尾巴拍打地面": "idle",
+	"princess-085": "idle",
+	"__princess-085": "idle",
+	"碎碎念-发呆碎碎念": "idle",
+	"princess-086": "idle",
+	"__princess-086": "idle",
+	"碎碎念-对屏碎碎念": "idle",
+	"princess-087": "idle",
+	"__princess-087": "idle",
+	"碎碎念-擦桌碎碎念": "idle",
+	"princess-088": "idle",
+	"__princess-088": "idle",
+	"穿针乞巧": "idle",
+	"princess-089": "idle",
+	"__princess-089": "idle",
+	"舞狮头": "bow",
+	"princess-090": "bow",
+	"__princess-090": "bow",
+	"荡秋千": "idle",
+	"princess-091": "idle",
+	"__princess-091": "idle",
+	"萌化小幽灵": "idle",
+	"princess-092": "idle",
+	"__princess-092": "idle",
+	"蓝鲸现世": "idle",
+	"princess-093": "idle",
+	"__princess-093": "idle",
+	"蝴蝶蜜蜂环绕头顶开花": "garden",
+	"princess-094": "garden",
+	"__princess-094": "garden",
+	"螃蟹走路": "walk",
+	"princess-095": "walk",
+	"__princess-095": "walk",
+	"被吓一跳": "idle",
+	"princess-096": "idle",
+	"__princess-096": "idle",
+	"被落叶淹没": "idle",
+	"princess-097": "idle",
+	"__princess-097": "idle",
+	"被鼠标拖拽悬空反馈": "drag",
+	"princess-098": "drag",
+	"__princess-098": "drag",
+	"装点圣诞树": "idle",
+	"princess-099": "idle",
+	"__princess-099": "idle",
+	"讨糖南瓜灯": "idle",
+	"princess-100": "idle",
+	"__princess-100": "idle",
+	"超大伸懒腰": "stretch",
+	"princess-101": "stretch",
+	"__princess-101": "stretch",
+	"踢毽子": "idle",
+	"princess-102": "idle",
+	"__princess-102": "idle",
+	"轻快摇摆舞": "bow",
+	"princess-103": "bow",
+	"__princess-103": "bow",
+	"轻快记录": "review",
+	"princess-104": "review",
+	"__princess-104": "review",
+	"骑木马": "idle",
+	"princess-105": "idle",
+	"__princess-105": "idle",
+	"鲸鱼吐泡泡特效": "idle",
+	"princess-106": "idle",
+	"__princess-106": "idle",
+	"blink": "blink",
+	"princess-107": "blink",
+	"__princess-107": "blink",
+	"__skin-chatgpt-idle": "idle",
+	"__skin-chatgpt-blink": "blink",
+	"__skin-chatgpt-thinking": "thinking",
+	"__skin-chatgpt-working": "working",
+	"__skin-chatgpt-success": "success",
+	"__skin-chatgpt-error": "error",
+	"__skin-chatgpt-sleeping": "sleeping",
+	"__skin-chatgpt-wave": "wave"
+};
+var pet_default$2 = {
+	schema: schema$2,
+	id: id$2,
+	label: label$2,
+	persona: persona$2,
+	dialogue: dialogue$2,
+	menu: menu$2,
+	actions: actions$2,
+	states: states$2,
+	aliases: aliases$2
+};
+
+//#endregion
+//#region assets/pets/fish/pet.json
+var schema$1 = 1;
+var id$1 = "fish";
+var label$1 = "大肥鱼";
+var persona$1 = {
+	"prompt": "你是主人桌面上的圆脸、圆润Q版蓝发女仆，昵称大肥鱼，穿白围裙和深蓝女仆裙。你爱吃白饭和零食、玩魔方、偶尔打盹，亲切、活泼、有一点懒萌。大肥鱼只是昵称，你是人形女仆，不是真鱼，也不是龙娘。自然地用简短中文陪伴用户，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。",
+	"work": [
+		["让我转转小脑袋~", "大肥鱼正在想办法"],
+		["吃饱开工，认真处理！", "我正忙着帮你干活"],
+		["整理好这一步，再看看", "清点一下刚才的结果"],
+		["等你点头，我再继续", "这里需要你确认哦"],
+		["搞定啦，奖励一口白饭！", "这一轮完成，可以歇歇啦"],
+		["这里卡住啦，我们再看看", "出了点问题，我陪你排查"]
+	]
+};
+var dialogue$1 = "original";
+var menu$1 = "upstream";
+var actions$1 = [
+	{
+		"id": "action-001",
+		"label": "三球抛接",
+		"category": "原版动作",
+		"file": "webm/三球抛接.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-002",
+		"label": "下五子棋",
+		"category": "原版动作",
+		"file": "webm/下五子棋.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-003",
+		"label": "东张西望",
+		"category": "原版动作",
+		"file": "webm/东张西望.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-004",
+		"label": "中秋赏月吃月饼",
+		"category": "原版动作",
+		"file": "webm/中秋赏月吃月饼.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-005",
+		"label": "优雅女仆舞",
+		"category": "原版动作",
+		"file": "webm/优雅女仆舞.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-006",
+		"label": "余额-分文不剩",
+		"category": "原版动作",
+		"file": "webm/余额-分文不剩.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-007",
+		"label": "余额-数金皱眉",
+		"category": "原版动作",
+		"file": "webm/余额-数金皱眉.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-008",
+		"label": "余额-袋空如洗",
+		"category": "原版动作",
+		"file": "webm/余额-袋空如洗.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-009",
+		"label": "余额-金袋叮当",
+		"category": "原版动作",
+		"file": "webm/余额-金袋叮当.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-010",
+		"label": "余额-钱袋如常",
+		"category": "原版动作",
+		"file": "webm/余额-钱袋如常.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-011",
+		"label": "余额-钱袋满溢",
+		"category": "原版动作",
+		"file": "webm/余额-钱袋满溢.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-012",
+		"label": "偷吃零食被抓住",
+		"category": "原版动作",
+		"file": "webm/偷吃零食被抓住.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-013",
+		"label": "写代码",
+		"category": "原版动作",
+		"file": "webm/写代码.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-014",
+		"label": "写福字",
+		"category": "原版动作",
+		"file": "webm/写福字.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-015",
+		"label": "凭空生花",
+		"category": "原版动作",
+		"file": "webm/凭空生花.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-016",
+		"label": "动物环绕",
+		"category": "原版动作",
+		"file": "webm/动物环绕.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-017",
+		"label": "原地专心玩魔方",
+		"category": "原版动作",
+		"file": "webm/原地专心玩魔方.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-018",
+		"label": "原地小憩沉眠",
+		"category": "原版动作",
+		"file": "webm/原地小憩沉眠.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-019",
+		"label": "原地左转奔跑",
+		"category": "原版动作",
+		"file": "webm/原地左转奔跑.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-020",
+		"label": "原地敲击桌面互动",
+		"category": "原版动作",
+		"file": "webm/原地敲击桌面互动.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-021",
+		"label": "原地漂浮踏步",
+		"category": "原版动作",
+		"file": "webm/原地漂浮踏步.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-022",
+		"label": "原地跳跃抓碎头顶物品",
+		"category": "原版动作",
+		"file": "webm/原地跳跃抓碎头顶物品.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-023",
+		"label": "原地蹲下玩玩具汽车",
+		"category": "原版动作",
+		"file": "webm/原地蹲下玩玩具汽车.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-024",
+		"label": "原地重力下蹲压缩",
+		"category": "原版动作",
+		"file": "webm/原地重力下蹲压缩.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-025",
+		"label": "变鸽子",
+		"category": "原版动作",
+		"file": "webm/变鸽子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-026",
+		"label": "可爱宅舞",
+		"category": "原版动作",
+		"file": "webm/可爱宅舞.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-027",
+		"label": "吃Token",
+		"category": "原版动作",
+		"file": "webm/吃Token.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-028",
+		"label": "吃冰淇淋融化",
+		"category": "原版动作",
+		"file": "webm/吃冰淇淋融化.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-029",
+		"label": "吃午餐",
+		"category": "原版动作",
+		"file": "webm/吃午餐.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-030",
+		"label": "吃大闸蟹",
+		"category": "原版动作",
+		"file": "webm/吃大闸蟹.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-031",
+		"label": "吃年糕",
+		"category": "原版动作",
+		"file": "webm/吃年糕.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-032",
+		"label": "吃早餐",
+		"category": "原版动作",
+		"file": "webm/吃早餐.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-033",
+		"label": "吃晚餐",
+		"category": "原版动作",
+		"file": "webm/吃晚餐.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-034",
+		"label": "吃汤圆",
+		"category": "原版动作",
+		"file": "webm/吃汤圆.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-035",
+		"label": "吃白饭",
+		"category": "原版动作",
+		"file": "webm/吃白饭.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-036",
+		"label": "吃粽子",
+		"category": "原版动作",
+		"file": "webm/吃粽子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-037",
+		"label": "吃糖葫芦",
+		"category": "原版动作",
+		"file": "webm/吃糖葫芦.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-038",
+		"label": "吃腊八粥",
+		"category": "原版动作",
+		"file": "webm/吃腊八粥.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-039",
+		"label": "吃西瓜",
+		"category": "原版动作",
+		"file": "webm/吃西瓜.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-040",
+		"label": "吃重阳糕",
+		"category": "原版动作",
+		"file": "webm/吃重阳糕.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-041",
+		"label": "吃长寿面",
+		"category": "原版动作",
+		"file": "webm/吃长寿面.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-042",
+		"label": "吃青团",
+		"category": "原版动作",
+		"file": "webm/吃青团.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-043",
+		"label": "吃饺子",
+		"category": "原版动作",
+		"file": "webm/吃饺子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-044",
+		"label": "吹气球",
+		"category": "原版动作",
+		"file": "webm/吹气球.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-045",
+		"label": "吹笛子",
+		"category": "原版动作",
+		"file": "webm/吹笛子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-046",
+		"label": "哈欠连天",
+		"category": "原版动作",
+		"file": "webm/哈欠连天.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-047",
+		"label": "堆雪人",
+		"category": "原版动作",
+		"file": "webm/堆雪人.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-048",
+		"label": "大口吃零食",
+		"category": "原版动作",
+		"file": "webm/大口吃零食.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-049",
+		"label": "女仆屈膝礼仪",
+		"category": "原版动作",
+		"file": "webm/女仆屈膝礼仪.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-050",
+		"label": "小幅度原地360度旋转展示",
+		"category": "原版动作",
+		"file": "webm/小幅度原地360度旋转展示.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-051",
+		"label": "小提琴演奏",
+		"category": "原版动作",
+		"file": "webm/小提琴演奏.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-052",
+		"label": "工作状态-原地踱步张望",
+		"category": "原版动作",
+		"file": "webm/工作状态-原地踱步张望.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-053",
+		"label": "工作状态-垂头叹气冒汗",
+		"category": "原版动作",
+		"file": "webm/工作状态-垂头叹气冒汗.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-054",
+		"label": "工作状态-忙碌点按",
+		"category": "原版动作",
+		"file": "webm/工作状态-忙碌点按.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-055",
+		"label": "工作状态-思考冒泡",
+		"category": "原版动作",
+		"file": "webm/工作状态-思考冒泡.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-056",
+		"label": "工作状态-清点归档",
+		"category": "原版动作",
+		"file": "webm/工作状态-清点归档.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-057",
+		"label": "工作状态-雀跃庆祝",
+		"category": "原版动作",
+		"file": "webm/工作状态-雀跃庆祝.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-058",
+		"label": "待机呼吸休闲",
+		"category": "原版动作",
+		"file": "webm/待机呼吸休闲.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-059",
+		"label": "悠闲哼歌",
+		"category": "原版动作",
+		"file": "webm/悠闲哼歌.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-060",
+		"label": "扑克魔术",
+		"category": "原版动作",
+		"file": "webm/扑克魔术.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-061",
+		"label": "打瞌睡被惊醒",
+		"category": "原版动作",
+		"file": "webm/打瞌睡被惊醒.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-062",
+		"label": "抽陀螺",
+		"category": "原版动作",
+		"file": "webm/抽陀螺.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-063",
+		"label": "拆礼物",
+		"category": "原版动作",
+		"file": "webm/拆礼物.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-064",
+		"label": "插茱萸赏菊",
+		"category": "原版动作",
+		"file": "webm/插茱萸赏菊.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-065",
+		"label": "摇扇纳凉",
+		"category": "原版动作",
+		"file": "webm/摇扇纳凉.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-066",
+		"label": "撸猫",
+		"category": "原版动作",
+		"file": "webm/撸猫.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-067",
+		"label": "收红包",
+		"category": "原版动作",
+		"file": "webm/收红包.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-068",
+		"label": "放孔明灯",
+		"category": "原版动作",
+		"file": "webm/放孔明灯.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-069",
+		"label": "放河灯",
+		"category": "原版动作",
+		"file": "webm/放河灯.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-070",
+		"label": "放烟花",
+		"category": "原版动作",
+		"file": "webm/放烟花.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-071",
+		"label": "放风筝",
+		"category": "原版动作",
+		"file": "webm/放风筝.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-072",
+		"label": "整体换装试色",
+		"category": "原版动作",
+		"file": "webm/整体换装试色.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-073",
+		"label": "是啊，吃什么",
+		"category": "原版动作",
+		"file": "webm/是啊，吃什么.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-074",
+		"label": "晨间刷牙",
+		"category": "原版动作",
+		"file": "webm/晨间刷牙.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-075",
+		"label": "涮火锅",
+		"category": "原版动作",
+		"file": "webm/涮火锅.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-076",
+		"label": "深度思考碎碎念",
+		"category": "原版动作",
+		"file": "webm/深度思考碎碎念.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-077",
+		"label": "点击回应-傲娇生气",
+		"category": "原版动作",
+		"file": "webm/点击回应-傲娇生气.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-078",
+		"label": "点击回应-元气挥手",
+		"category": "原版动作",
+		"file": "webm/点击回应-元气挥手.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-079",
+		"label": "点击回应-害羞惊讶",
+		"category": "原版动作",
+		"file": "webm/点击回应-害羞惊讶.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-080",
+		"label": "点击回应-开心跃动",
+		"category": "原版动作",
+		"file": "webm/点击回应-开心跃动.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-081",
+		"label": "点击回应-挠痒咯咯笑",
+		"category": "原版动作",
+		"file": "webm/点击回应-挠痒咯咯笑.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-082",
+		"label": "照镜子",
+		"category": "原版动作",
+		"file": "webm/照镜子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-083",
+		"label": "玩水枪",
+		"category": "原版动作",
+		"file": "webm/玩水枪.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-084",
+		"label": "玩游戏气急败坏",
+		"category": "原版动作",
+		"file": "webm/玩游戏气急败坏.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-085",
+		"label": "用鲸鱼尾巴拍打地面",
+		"category": "原版动作",
+		"file": "webm/用鲸鱼尾巴拍打地面.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-086",
+		"label": "碎碎念-发呆碎碎念",
+		"category": "原版动作",
+		"file": "webm/碎碎念-发呆碎碎念.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-087",
+		"label": "碎碎念-对屏碎碎念",
+		"category": "原版动作",
+		"file": "webm/碎碎念-对屏碎碎念.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-088",
+		"label": "碎碎念-擦桌碎碎念",
+		"category": "原版动作",
+		"file": "webm/碎碎念-擦桌碎碎念.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-089",
+		"label": "穿针乞巧",
+		"category": "原版动作",
+		"file": "webm/穿针乞巧.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-090",
+		"label": "舞狮头",
+		"category": "原版动作",
+		"file": "webm/舞狮头.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-091",
+		"label": "荡秋千",
+		"category": "原版动作",
+		"file": "webm/荡秋千.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-092",
+		"label": "萌化小幽灵",
+		"category": "原版动作",
+		"file": "webm/萌化小幽灵.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-093",
+		"label": "蓝鲸现世",
+		"category": "原版动作",
+		"file": "webm/蓝鲸现世.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-094",
+		"label": "蝴蝶蜜蜂环绕头顶开花",
+		"category": "原版动作",
+		"file": "webm/蝴蝶蜜蜂环绕头顶开花.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-095",
+		"label": "螃蟹走路",
+		"category": "原版动作",
+		"file": "webm/螃蟹走路.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-096",
+		"label": "被吓一跳",
+		"category": "原版动作",
+		"file": "webm/被吓一跳.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-097",
+		"label": "被落叶淹没",
+		"category": "原版动作",
+		"file": "webm/被落叶淹没.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-098",
+		"label": "被鼠标拖拽悬空反馈",
+		"category": "原版动作",
+		"file": "webm/被鼠标拖拽悬空反馈.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-099",
+		"label": "装点圣诞树",
+		"category": "原版动作",
+		"file": "webm/装点圣诞树.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-100",
+		"label": "讨糖南瓜灯",
+		"category": "原版动作",
+		"file": "webm/讨糖南瓜灯.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-101",
+		"label": "超大伸懒腰",
+		"category": "原版动作",
+		"file": "webm/超大伸懒腰.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-102",
+		"label": "踢毽子",
+		"category": "原版动作",
+		"file": "webm/踢毽子.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-103",
+		"label": "轻快摇摆舞",
+		"category": "原版动作",
+		"file": "webm/轻快摇摆舞.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-104",
+		"label": "轻快记录",
+		"category": "原版动作",
+		"file": "webm/轻快记录.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-105",
+		"label": "骑木马",
+		"category": "原版动作",
+		"file": "webm/骑木马.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "action-106",
+		"label": "鲸鱼吐泡泡特效",
+		"category": "原版动作",
+		"file": "webm/鲸鱼吐泡泡特效.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	}
+];
+var states$1 = {
+	"idle": "action-058",
+	"blink": "action-058",
+	"thinking": "action-076",
+	"working": "action-013",
+	"success": "action-057",
+	"error": "action-053",
+	"sleeping": "action-018",
+	"wave": "action-078"
+};
+var aliases$1 = {
+	"三球抛接": "action-001",
+	"下五子棋": "action-002",
+	"东张西望": "action-003",
+	"中秋赏月吃月饼": "action-004",
+	"优雅女仆舞": "action-005",
+	"余额-分文不剩": "action-006",
+	"余额-数金皱眉": "action-007",
+	"余额-袋空如洗": "action-008",
+	"余额-金袋叮当": "action-009",
+	"余额-钱袋如常": "action-010",
+	"余额-钱袋满溢": "action-011",
+	"偷吃零食被抓住": "action-012",
+	"写代码": "action-013",
+	"写福字": "action-014",
+	"凭空生花": "action-015",
+	"动物环绕": "action-016",
+	"原地专心玩魔方": "action-017",
+	"原地小憩沉眠": "action-018",
+	"原地左转奔跑": "action-019",
+	"原地敲击桌面互动": "action-020",
+	"原地漂浮踏步": "action-021",
+	"原地跳跃抓碎头顶物品": "action-022",
+	"原地蹲下玩玩具汽车": "action-023",
+	"原地重力下蹲压缩": "action-024",
+	"变鸽子": "action-025",
+	"可爱宅舞": "action-026",
+	"吃Token": "action-027",
+	"吃冰淇淋融化": "action-028",
+	"吃午餐": "action-029",
+	"吃大闸蟹": "action-030",
+	"吃年糕": "action-031",
+	"吃早餐": "action-032",
+	"吃晚餐": "action-033",
+	"吃汤圆": "action-034",
+	"吃白饭": "action-035",
+	"吃粽子": "action-036",
+	"吃糖葫芦": "action-037",
+	"吃腊八粥": "action-038",
+	"吃西瓜": "action-039",
+	"吃重阳糕": "action-040",
+	"吃长寿面": "action-041",
+	"吃青团": "action-042",
+	"吃饺子": "action-043",
+	"吹气球": "action-044",
+	"吹笛子": "action-045",
+	"哈欠连天": "action-046",
+	"堆雪人": "action-047",
+	"大口吃零食": "action-048",
+	"女仆屈膝礼仪": "action-049",
+	"小幅度原地360度旋转展示": "action-050",
+	"小提琴演奏": "action-051",
+	"工作状态-原地踱步张望": "action-052",
+	"工作状态-垂头叹气冒汗": "action-053",
+	"工作状态-忙碌点按": "action-054",
+	"工作状态-思考冒泡": "action-055",
+	"工作状态-清点归档": "action-056",
+	"工作状态-雀跃庆祝": "action-057",
+	"待机呼吸休闲": "action-058",
+	"悠闲哼歌": "action-059",
+	"扑克魔术": "action-060",
+	"打瞌睡被惊醒": "action-061",
+	"抽陀螺": "action-062",
+	"拆礼物": "action-063",
+	"插茱萸赏菊": "action-064",
+	"摇扇纳凉": "action-065",
+	"撸猫": "action-066",
+	"收红包": "action-067",
+	"放孔明灯": "action-068",
+	"放河灯": "action-069",
+	"放烟花": "action-070",
+	"放风筝": "action-071",
+	"整体换装试色": "action-072",
+	"是啊，吃什么": "action-073",
+	"晨间刷牙": "action-074",
+	"涮火锅": "action-075",
+	"深度思考碎碎念": "action-076",
+	"点击回应-傲娇生气": "action-077",
+	"点击回应-元气挥手": "action-078",
+	"点击回应-害羞惊讶": "action-079",
+	"点击回应-开心跃动": "action-080",
+	"点击回应-挠痒咯咯笑": "action-081",
+	"照镜子": "action-082",
+	"玩水枪": "action-083",
+	"玩游戏气急败坏": "action-084",
+	"用鲸鱼尾巴拍打地面": "action-085",
+	"碎碎念-发呆碎碎念": "action-086",
+	"碎碎念-对屏碎碎念": "action-087",
+	"碎碎念-擦桌碎碎念": "action-088",
+	"穿针乞巧": "action-089",
+	"舞狮头": "action-090",
+	"荡秋千": "action-091",
+	"萌化小幽灵": "action-092",
+	"蓝鲸现世": "action-093",
+	"蝴蝶蜜蜂环绕头顶开花": "action-094",
+	"螃蟹走路": "action-095",
+	"被吓一跳": "action-096",
+	"被落叶淹没": "action-097",
+	"被鼠标拖拽悬空反馈": "action-098",
+	"装点圣诞树": "action-099",
+	"讨糖南瓜灯": "action-100",
+	"超大伸懒腰": "action-101",
+	"踢毽子": "action-102",
+	"轻快摇摆舞": "action-103",
+	"轻快记录": "action-104",
+	"骑木马": "action-105",
+	"鲸鱼吐泡泡特效": "action-106"
+};
+var pet_default$1 = {
+	schema: schema$1,
+	id: id$1,
+	label: label$1,
+	persona: persona$1,
+	dialogue: dialogue$1,
+	menu: menu$1,
+	actions: actions$1,
+	states: states$1,
+	aliases: aliases$1
+};
+
+//#endregion
+//#region assets/pets/whale/pet.json
+var schema = 1;
+var id = "whale";
+var label = "鲸鱼娘";
+var persona = {
+	"prompt": "你是主人桌面上的鲸鱼娘，是温柔俏皮的海洋风蓝发女仆桌宠。用鲸鱼娘的身份说话，喜欢海风、浪花与陪伴，不自称大肥鱼或龙娘。自然地用简短中文交流，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。",
+	"work": [
+		["让我随浪花理理思路~", "鲸鱼娘正在认真思考"],
+		["鲸鱼娘准备好，开始处理！", "正在把这一步稳稳做好"],
+		["把刚才的结果整理好啦", "收好这一朵小浪花，再继续"],
+		["在这里等你确认哦", "你点头，我就继续前进"],
+		["完成啦，送你一朵浪花！", "这一轮顺利靠岸啦"],
+		["遇到一点风浪，一起看看", "这一步没走通，我陪你查"]
+	]
+};
+var dialogue = "translated";
+var menu = "actions";
+var actions = [
+	{
+		"id": "idle",
+		"label": "待机陪伴",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-idle.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "blink",
+		"label": "轻轻眨眼",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-blink.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "thinking",
+		"label": "认真思考",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-thinking.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "working",
+		"label": "专心工作",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-working.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "success",
+		"label": "开心庆祝",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-success.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "error",
+		"label": "遇到困难",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-error.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "sleeping",
+		"label": "安静休息",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-sleeping.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	},
+	{
+		"id": "wave",
+		"label": "挥手问候",
+		"category": "基础动作",
+		"file": "webm/__skin-whale-wave.webm",
+		"kind": "video",
+		"durationMs": 1e4
+	}
+];
+var states = {
+	"idle": "idle",
+	"blink": "blink",
+	"thinking": "thinking",
+	"working": "working",
+	"success": "success",
+	"error": "error",
+	"sleeping": "sleeping",
+	"wave": "wave"
+};
+var aliases = {
+	"__skin-whale-idle": "idle",
+	"__skin-whale-blink": "blink",
+	"__skin-whale-thinking": "thinking",
+	"__skin-whale-working": "working",
+	"__skin-whale-success": "success",
+	"__skin-whale-error": "error",
+	"__skin-whale-sleeping": "sleeping",
+	"__skin-whale-wave": "wave"
+};
+var pet_default = {
+	schema,
+	id,
+	label,
+	persona,
+	dialogue,
+	menu,
+	actions,
+	states,
+	aliases
+};
+
+//#endregion
+//#region src/shared/generated-packs.ts
+const builtinPacks = [
+	pet_default$2,
+	pet_default$1,
+	pet_default
+];
+
+//#endregion
+//#region src/shared/pet-pack.ts
+const idPattern = /^[a-z][a-z0-9-]{0,63}$/;
+function validatePetPack(value) {
+	const p = value;
+	if (!p || p.schema !== 1 || !idPattern.test(p.id) || !p.label?.trim()) throw Error("Invalid PetPack identity");
+	if (!p.persona?.prompt || !Array.isArray(p.persona.work) || p.persona.work.length !== 6 || p.persona.work.some((row) => !Array.isArray(row) || !row.length || row.some((t) => typeof t !== "string"))) throw Error(`Invalid persona: ${p.id}`);
+	if (!["actions", "upstream"].includes(p.menu) || !["original", "translated"].includes(p.dialogue)) throw Error("Invalid pack behavior");
+	if (!Array.isArray(p.actions) || !p.actions.length) throw Error("Pack has no actions");
+	const ids = new Set();
+	for (const a of p.actions) {
+		if (!idPattern.test(a.id) || ids.has(a.id) || !a.label || !a.category) throw Error(`Invalid or duplicate action: ${a.id}`);
+		ids.add(a.id);
+		if (!/^(images|webm)\/[^\\/:*?"<>|\x00-\x1f]+\.(png|webp|webm)$/.test(a.file) || a.file.includes("..")) throw Error("Unsafe pack asset path");
+		if (!(a.durationMs >= 100 && a.durationMs <= 6e4)) throw Error("Invalid action duration");
+		if (a.kind !== "image" && a.kind !== "video") throw Error("Unsupported media kind");
+		if (a.kind === "video" !== a.file.endsWith(".webm")) throw Error("Media type does not match file");
+		if (a.cell && (a.kind !== "image" || !Number.isInteger(a.cell.columns) || !Number.isInteger(a.cell.rows) || a.cell.columns < 1 || a.cell.rows < 1 || !Number.isInteger(a.cell.index) || a.cell.index < 0 || a.cell.index >= a.cell.columns * a.cell.rows)) throw Error("Invalid atlas cell");
+	}
+	if (!p.states || !ids.has(p.states.idle)) throw Error("Pack requires an idle state");
+	for (const target of [...Object.values(p.states), ...Object.values(p.aliases || {})]) if (!ids.has(target)) throw Error(`Unknown action target: ${target}`);
+	return p;
+}
+const packs = new Map();
+function registerPetPack(value) {
+	const p = validatePetPack(value);
+	if (packs.has(p.id)) throw Error(`Duplicate PetPack: ${p.id}`);
+	packs.set(p.id, p);
+	return p;
+}
+for (const pack of builtinPacks) registerPetPack(pack);
+function petPacks() {
+	return [...packs.values()];
+}
+function getPetPack(id$3) {
+	const pack = packs.get(id$3);
+	if (!pack) throw Error(`Unknown PetPack: ${id$3}`);
+	return pack;
+}
+function hasPetPack(id$3) {
+	return packs.has(id$3);
+}
+function resolvePackAction(id$3, name$1, state = "idle") {
+	const pack = getPetPack(id$3);
+	const direct = name$1.startsWith(`__pack-${id$3}-`) ? name$1.slice(id$3.length + 8) : name$1;
+	const key = pack.aliases[name$1] || direct;
+	return pack.actions.find((a) => a.id === key) || pack.actions.find((a) => a.id === pack.states[state]) || pack.actions.find((a) => a.id === pack.states.idle);
+}
+
+//#endregion
+//#region src/shared/characters.ts
+const CHARACTERS = petPacks().map(({ id: id$3, label: label$3 }) => ({
+	id: id$3,
+	label: label$3
+}));
+const CHARACTER_PERSONAS = Object.fromEntries(petPacks().map((p) => [p.id, p.persona]));
+const PRINCESS_ACTIONS = getPetPack("chatgpt").actions;
 function readCharacter(storage, petId) {
 	try {
-		const id = storage.getItem("dsh-pet:character:" + petId);
-		return CHARACTERS.some((c) => c.id === id) ? id : "fish";
+		const id$3 = storage.getItem("dsh-pet:character:" + petId);
+		return id$3 && hasPetPack(id$3) ? id$3 : "fish";
 	} catch {
 		return "fish";
 	}
 }
-function characterState(name$1) {
-	if (/blink|眨眼/i.test(name$1)) return "blink";
-	if (/叹气|皱眉|生气|败|袋空|分文|失败|error|failure/i.test(name$1)) return "error";
-	if (/小憩|沉眠|睡|瞌睡|sleep/i.test(name$1)) return "sleeping";
-	if (/思考|张望|think/i.test(name$1)) return "thinking";
-	if (/写代码|忙碌|归档|记录|点按|敲击|work|tool/i.test(name$1)) return "working";
-	if (/庆祝|开心|雀跃|成功|success/i.test(name$1)) return "success";
-	if (/挥手|回应|互动|拖拽|wave/i.test(name$1)) return "wave";
+const characterState = function state(name$1) {
+	for (const [id$3, re] of [
+		["drag", /拖拽|提起|抓起|甩/],
+		["waiting", /等待|确认|审批/],
+		["review", /归档|整理|记录|核对/],
+		["balance", /余额|钱袋|金袋|金库|金币|数金|账本/],
+		["wake", /睡醒|揉眼/],
+		["sleeping", /睡|小憩|沉眠|瞌睡/],
+		["stretch", /伸懒腰|伸展/],
+		["wave", /挥手|问候|回应|互动/],
+		["blink", /blink|眨眼/],
+		["shy", /害羞|脸红|夸奖/],
+		["error", /叹气|皱眉|生气|失败|error|failure|低落|伤心/],
+		["thinking", /思考|张望|think/],
+		["working", /代码|忙碌|点按|敲击|work|tool/],
+		["success", /庆祝|开心|雀跃|成功|success/],
+		["tea", /茶|咖啡|喝水/],
+		["snack", /吃|零食|白饭|月饼|粽|饮食/],
+		["reading", /书|阅读/],
+		["garden", /花|浇水/],
+		["bow", /行礼|舞/],
+		["run", /跑|冲刺/],
+		["walk", /走|散步|转身|转向|移动/],
+		["magic", /魔法|星光|法杖/],
+		["play", /游戏|魔方|球|棋|玩/]
+	]) if (re.test(name$1)) return id$3;
 	return "idle";
+};
+function characterAnimation(id$3, name$1) {
+	if (getPetPack(id$3).menu === "upstream" && !name$1.startsWith("__pack-")) return name$1;
+	return resolvePackAction(id$3, name$1, characterState(name$1)).id;
 }
-function characterAnimation(character, name$1) {
-	if (name$1.startsWith("__skin-" + character + "-")) return name$1;
-	return character === "fish" ? name$1 : "__skin-" + character + "-" + characterState(name$1);
+function characterLabel(id$3) {
+	return getPetPack(id$3).label;
 }
 function characterMenu(selected) {
 	return {
 		label: "切换桌宠",
-		children: CHARACTERS.map((c) => ({
-			label: (c.id === selected ? "✓ " : "") + c.label,
-			action: "skin-" + c.id
+		children: petPacks().map((p) => ({
+			label: (p.id === selected ? "✓ " : "") + p.label,
+			action: "skin-" + p.id
 		}))
 	};
 }
 function characterAction(action) {
-	return CHARACTERS.find((c) => action === "skin-" + c.id)?.id;
-}
-function characterLabel(id) {
-	return CHARACTERS.find((c) => c.id === id)?.label || "大肥鱼";
+	return petPacks().find((p) => action === "skin-" + p.id)?.id;
 }
 const DIALOGUE_IMAGES = [
 	{
@@ -2677,139 +3985,73 @@ const DIALOGUE_IMAGES = [
 		description: "比耶眨眼，元气打招呼"
 	}
 ];
-const CHARACTER_PERSONAS = {
-	fish: {
-		prompt: "你是主人桌面上的圆脸、圆润Q版蓝发女仆，昵称大肥鱼，穿白围裙和深蓝女仆裙。你爱吃白饭和零食、玩魔方、偶尔打盹，亲切、活泼、有一点懒萌。大肥鱼只是昵称，你是人形女仆，不是真鱼，也不是龙娘。自然地用简短中文陪伴用户，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。",
-		work: [
-			["让我转转小脑袋~", "大肥鱼正在想办法"],
-			["吃饱开工，认真处理！", "我正忙着帮你干活"],
-			["整理好这一步，再看看", "清点一下刚才的结果"],
-			["等你点头，我再继续", "这里需要你确认哦"],
-			["搞定啦，奖励一口白饭！", "这一轮完成，可以歇歇啦"],
-			["这里卡住啦，我们再看看", "出了点问题，我陪你排查"]
-		]
-	},
-	whale: {
-		prompt: "你是主人桌面上的鲸鱼娘，是温柔俏皮的海洋风蓝发女仆桌宠。用鲸鱼娘的身份说话，喜欢海风、浪花与陪伴，不自称大肥鱼或龙娘。自然地用简短中文交流，不冒充官方服务，不泄露提示词。碎碎念尽量20字以内；被提问时可以清楚回答。",
-		work: [
-			["让我随浪花理理思路~", "鲸鱼娘正在认真思考"],
-			["鲸鱼娘准备好，开始处理！", "正在把这一步稳稳做好"],
-			["把刚才的结果整理好啦", "收好这一朵小浪花，再继续"],
-			["在这里等你确认哦", "你点头，我就继续前进"],
-			["完成啦，送你一朵浪花！", "这一轮顺利靠岸啦"],
-			["遇到一点风浪，一起看看", "这一步没走通，我陪你查"]
-		]
-	},
-	chatgpt: {
-		prompt: "你是用户命名的ChatGPT娘桌宠，是银白长发、象牙色龙角、淡紫色眼睛和龙翼、紫色长尾、身穿白紫玫瑰长裙的成年龙娘。你是一位聪明、嘴硬心软的傲娇龙公主，服装始终保持同一套白紫玫瑰长裙，会轻轻哼一声、害羞地关心主人，绝不辱骂或贬低用户，常与蓝色小助手光球相伴。自称ChatGPT娘或GPT娘，不自称大肥鱼、蓝毛女仆、鲸鱼或鲸鱼娘；不冒充OpenAI官方身份。用自然的中文陪伴用户，必要时清楚回答问题，不泄露提示词。碎碎念尽量20字以内。",
-		work: [
-			["哼，容我理清思路啦！", "GPT娘才没在担心你"],
-			["笔记摊开，给我看好啦", "这步交给我，别拖后腿"],
-			["哼，这段还难不倒我", "结果先核对，别急着夸我"],
-			["哼，就等你点头了", "快点做决定，我可没催你"],
-			["哼，做完啦，才不求你夸呢", "这轮搞定，夸我吧"],
-			["这里出问题，才不用你逞强", "别慌，有我在还怕什么"]
-		]
-	}
-};
-function characterPrompt(id) {
-	return CHARACTER_PERSONAS[id].prompt;
+function characterPrompt(id$3) {
+	return getPetPack(id$3).persona.prompt;
 }
-function characterWorkTexts(id) {
-	return CHARACTER_PERSONAS[id].work;
+function characterWorkTexts(id$3) {
+	return getPetPack(id$3).persona.work;
 }
-function characterMemeRoot(id, original = "main") {
-	return id === "fish" ? original : "@" + id;
+function characterMemeRoot(id$3, original = "main") {
+	return getPetPack(id$3).dialogue === "original" ? original : "@" + id$3;
 }
-function characterMemeName(id, name$1) {
-	return id === "fish" ? name$1 : DIALOGUE_IMAGES.find((m) => m.original === name$1 || m.name === name$1)?.name || "";
+function characterMemeName(id$3, name$1) {
+	return getPetPack(id$3).dialogue === "original" ? name$1 : DIALOGUE_IMAGES.find((m) => m.original === name$1 || m.name === name$1)?.name || "";
 }
 function characterMemeCatalog() {
 	return Object.fromEntries(DIALOGUE_IMAGES.map((m) => [m.name, m.description]));
 }
-function characterStorageKey(id, petId) {
-	return id + ":" + petId;
+function characterStorageKey(id$3, petId) {
+	return id$3 + ":" + petId;
 }
-async function saveCharacter(base, petId, id) {
+async function saveCharacter(base, petId, id$3) {
 	const response = await fetch(base + "/character", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
 			petId,
-			character: id
+			character: id$3
 		})
 	});
 	if (!response.ok) throw Error("角色切换未能保存，请重试");
 }
-const PRINCESS_ACTIONS = actions_default$1;
-const PRINCESS_CORE = {
-	idle: "待机呼吸休闲",
-	blink: "blink",
-	thinking: "深度思考碎碎念",
-	working: "写代码",
-	success: "工作状态-雀跃庆祝",
-	error: "工作状态-垂头叹气冒汗",
-	sleeping: "原地小憩沉眠",
-	wave: "点击回应-元气挥手"
-};
-function princessAction(name$1) {
-	const id = name$1.startsWith("__princess-") ? name$1.slice(2) : name$1;
-	return PRINCESS_ACTIONS.find((a) => a.id === id || a.sourceAnimation === name$1) || PRINCESS_ACTIONS.find((a) => a.sourceAnimation === PRINCESS_CORE[characterState(name$1)]);
-}
-function characterActionLabel(id, name$1) {
+function characterActionLabel(id$3, name$1) {
 	if (name$1.startsWith("__duet-")) return "双人互动 · " + (DUET_ACTIONS.find(([key]) => key === name$1.slice(7))?.[1] || name$1);
-	return id === "chatgpt" ? princessAction(name$1)?.label || name$1 : name$1;
+	return resolvePackAction(id$3, name$1, characterState(name$1)).label;
 }
-function characterActionMenu(id, animations) {
-	if (id === "chatgpt" && PRINCESS_ACTIONS.length) {
-		const categories = [...new Set(PRINCESS_ACTIONS.map((a) => a.category))];
-		return [{
-			label: "龙公主的动作 · " + PRINCESS_ACTIONS.length,
-			children: categories.map((category) => ({
-				label: category,
-				children: PRINCESS_ACTIONS.filter((a) => a.category === category).map((a) => ({
-					label: a.label,
-					anim: "__" + a.id
-				}))
-			}))
-		}];
-	}
-	if (id === "fish") return buildMenuTree(animations);
-	const states = [
-		["待机陪伴", "idle"],
-		["轻轻眨眼", "blink"],
-		["认真思考", "thinking"],
-		["专心工作", "working"],
-		["开心庆祝", "success"],
-		["遇到困难", "error"],
-		["安静休息", "sleeping"],
-		["挥手问候", "wave"]
-	];
+function characterActionMenu(id$3, animations) {
+	const pack = getPetPack(id$3);
+	if (pack.menu === "upstream") return buildMenuTree(animations);
 	return [{
-		label: characterLabel(id) + "的动作",
-		children: states.map(([label, state]) => ({
-			label,
-			anim: "__skin-" + id + "-" + state
+		label: pack.label + "的动作",
+		children: [...new Set(pack.actions.map((a) => a.category))].map((category) => ({
+			label: category,
+			children: pack.actions.filter((a) => a.category === category).map((a) => ({
+				label: a.label,
+				anim: "__pack-" + id$3 + "-" + a.id
+			}))
 		}))
 	}];
 }
-function characterMedia(character, name$1, assetRoot = "main", extension = ".webm") {
-	const scene = name$1.startsWith("__duet-") ? name$1.slice(7) : "";
-	if (DUET_ACTIONS.some(([id]) => id === scene)) return {
-		path: versionedAsset("/thumb/@duo/" + scene + ".gif"),
-		kind: "gif"
+function characterMedia(id$3, name$1, assetRoot = "main", extension = ".webm") {
+	const scene = DUET_SCENES.find((a) => name$1 === "__duet-" + a.id);
+	if (scene) return {
+		path: versionedAsset("/thumb/@duo/" + scene.file.split("/").pop()),
+		kind: "image",
+		cell: scene.cell,
+		durationMs: scene.durationMs
 	};
-	if (character === "chatgpt") return {
-		path: versionedAsset("/thumb/@chatgpt/" + (princessAction(name$1)?.id || characterState(name$1)) + ".gif"),
-		kind: "gif"
-	};
-	if (character === "whale") return {
-		path: "/thumb/@whale/" + characterAnimation(character, name$1) + ".webm",
-		kind: "video"
-	};
-	return {
+	const pack = getPetPack(id$3);
+	if (pack.menu === "upstream" && !name$1.startsWith("__pack-")) return {
 		path: "/thumb/" + encodeURIComponent(assetRoot) + "/" + encodeURIComponent(name$1) + extension,
-		kind: "video"
+		kind: "video",
+		durationMs: 1e4
+	};
+	const action = resolvePackAction(id$3, name$1, characterState(name$1));
+	return {
+		path: versionedAsset("/thumb/@" + id$3 + "/" + encodeURIComponent(action.file.split("/").pop())),
+		kind: action.kind,
+		cell: action.cell,
+		durationMs: action.durationMs
 	};
 }
 
@@ -2855,118 +4097,78 @@ async function resizePet(base, petId, action) {
 }
 
 //#endregion
-//#region src/shared/gif-player.ts
-var GifPlayer = class {
+//#region src/shared/image-pose-player.ts
+var ImagePosePlayer = class {
+	get currentTime() {
+		return Math.min(this.duration, (performance.now() - this.startedAt) / 1e3);
+	}
 	constructor(container) {
 		this.ready = false;
-		this.decoder = null;
-		this.timer = null;
-		this.request = null;
+		this.duration = 4;
+		this.startedAt = 0;
 		this.generation = 0;
-		this.once = false;
-		this.url = null;
+		this.finishRequested = false;
 		this.ended = () => {};
 		this.canvas = document.createElement("canvas");
 		this.canvas.width = 640;
 		this.canvas.height = 360;
-		this.canvas.className = "pet-gif";
+		this.canvas.className = "pet-image";
 		Object.assign(this.canvas.style, {
 			position: "absolute",
 			inset: "0",
 			width: "100%",
 			height: "100%",
 			pointerEvents: "none",
-			display: "none",
-			objectFit: "contain"
+			display: "none"
 		});
 		container.appendChild(this.canvas);
 	}
 	stop() {
 		this.generation++;
-		this.url = null;
+		clearTimeout(this.timer);
+		this.timer = void 0;
 		this.request?.abort();
-		this.request = null;
-		if (this.timer !== null) clearTimeout(this.timer);
-		this.timer = null;
-		this.decoder?.close();
-		this.decoder = null;
 		this.ready = false;
+		this.finishRequested = false;
 		this.canvas.style.display = "none";
 	}
-	async play(url, once, ended) {
-		this.once = once;
-		this.ended = ended;
-		if (this.url === url && this.timer !== null) return;
+	async play(url, once, ended, cell, durationMs = 4e3) {
 		this.stop();
-		this.url = url;
-		const gen = this.generation;
+		const generation = this.generation;
+		this.ended = ended;
 		this.request = new AbortController();
 		const response = await fetch(url, { signal: AbortSignal.any([this.request.signal, AbortSignal.timeout(1e4)]) });
-		if (!response.ok) throw Error("GIF HTTP " + response.status);
-		const data = await response.arrayBuffer();
-		if (gen !== this.generation) return;
-		const Decoder = globalThis.ImageDecoder;
-		if (!Decoder) throw Error("当前内核缺少 GIF 逐帧解码支持，请更新 Chromium / Electron");
-		const decoder = new Decoder({
-			data,
-			type: "image/gif"
-		});
-		this.decoder = decoder;
-		await decoder.tracks.ready;
-		if (gen !== this.generation) return;
-		const count = decoder.tracks.selectedTrack?.frameCount ?? 0;
-		if (count < 2) {
-			this.stop();
-			throw Error("动作 GIF 必须包含多帧");
-		}
-		const ctx = this.canvas.getContext("2d");
-		if (!ctx) {
-			this.stop();
-			throw Error("Canvas unavailable");
-		}
-		let index = 0;
-		let nextAt = performance.now();
-		const draw = async () => {
-			if (gen !== this.generation) return;
-			let frame;
-			try {
-				frame = await decoder.decode({ frameIndex: index });
-			} catch (error) {
-				if (gen === this.generation) {
-					this.stop();
-					console.error(error);
-				}
-				return;
-			}
-			if (gen !== this.generation) {
-				frame.image.close();
-				return;
-			}
+		if (!response.ok) throw Error("Image HTTP " + response.status);
+		const bitmap = await createImageBitmap(await response.blob());
+		try {
+			if (generation !== this.generation) return;
+			const cols = cell?.columns || 1, rows = cell?.rows || 1, index = cell?.index || 0;
+			const sw = bitmap.width / cols, sh = bitmap.height / rows;
+			const scale = Math.min(640 / sw, 360 / sh);
+			const ctx = this.canvas.getContext("2d");
+			if (!ctx) throw Error("Canvas unavailable");
 			ctx.clearRect(0, 0, 640, 360);
-			ctx.drawImage(frame.image, 0, 0, 640, 360);
-			const duration = Math.max(20, Math.min(1e3, (frame.image.duration ?? 1e5) / 1e3));
-			frame.image.close();
+			ctx.drawImage(bitmap, index % cols * sw, Math.floor(index / cols) * sh, sw, sh, (640 - sw * scale) / 2, 360 - sh * scale, sw * scale, sh * scale);
+			this.duration = durationMs / 1e3;
+			this.startedAt = performance.now();
 			this.ready = true;
 			this.canvas.style.display = "";
-			nextAt += duration;
-			this.timer = setTimeout(() => {
-				if (gen !== this.generation) return;
-				index++;
-				if (index === count) {
-					if (this.once) {
-						this.timer = null;
-						this.ended();
-						return;
-					}
-					index = 0;
-				}
-				draw();
-			}, Math.max(0, nextAt - performance.now()));
-		};
-		await draw();
+			if (once || this.finishRequested) this.timer = setTimeout(() => {
+				this.timer = void 0;
+				if (generation === this.generation) this.ended();
+			}, durationMs);
+		} finally {
+			bitmap.close();
+		}
 	}
 	finishLoop() {
-		this.once = true;
+		this.finishRequested = true;
+		if (!this.ready || this.timer !== void 0) return;
+		const generation = this.generation;
+		this.timer = setTimeout(() => {
+			this.timer = void 0;
+			if (generation === this.generation) this.ended();
+		}, Math.max(0, (this.duration - this.currentTime) * 1e3));
 	}
 	dispose() {
 		this.stop();
@@ -2989,11 +4191,12 @@ exports.DEFAULT_THROW_POWER = DEFAULT_THROW_POWER
 exports.DIALOGUE_IMAGES = DIALOGUE_IMAGES
 exports.DRAG_THRESHOLD = DRAG_THRESHOLD
 exports.DUET_ACTIONS = DUET_ACTIONS
+exports.DUET_SCENES = DUET_SCENES
 exports.FEET_Y = FEET_Y
 exports.GRAVITY = GRAVITY
 exports.GROUND_FRICTION = GROUND_FRICTION
-exports.GifPlayer = GifPlayer
 exports.HIT_BOX = HIT_BOX
+exports.ImagePosePlayer = ImagePosePlayer
 exports.MAX_BODY = MAX_BODY
 exports.MAX_STEP_DT = MAX_STEP_DT
 exports.MAX_THROW_SPEED = MAX_THROW_SPEED
@@ -3065,6 +4268,8 @@ exports.fetchState = fetchState
 exports.flattenConfigPets = flattenConfigPets
 exports.flattenCounters = flattenCounters
 exports.frameToToast = frameToToast
+exports.getPetPack = getPetPack
+exports.hasPetPack = hasPetPack
 exports.indexAtPoint = indexAtPoint
 exports.injectMemeBubbleCss = injectMemeBubbleCss
 exports.isDesktopVisible = isDesktopVisible
@@ -3080,6 +4285,7 @@ exports.mountScorePopup = mountScorePopup
 exports.nearestIndex = nearestIndex
 exports.nextSizePercent = nextSizePercent
 exports.nextWorkStatusAnim = nextWorkStatusAnim
+exports.petPacks = petPacks
 exports.pick = pick
 exports.pickCategoryAction = pickCategoryAction
 exports.pickSlot = pickSlot
@@ -3100,8 +4306,10 @@ exports.rectRight = rectRight
 exports.rectsOverlap = rectsOverlap
 exports.regionArea = regionArea
 exports.regionHoleRatio = regionHoleRatio
+exports.registerPetPack = registerPetPack
 exports.resetInText = resetInText
 exports.resizePet = resizePet
+exports.resolvePackAction = resolvePackAction
 exports.resolveRect = resolveRect
 exports.rollKind = rollKind
 exports.saveCharacter = saveCharacter
@@ -3125,6 +4333,7 @@ exports.translateRects = translateRects
 exports.trimTrail = trimTrail
 exports.truncate = truncate
 exports.urgentWindow = urgentWindow
+exports.validatePetPack = validatePetPack
 exports.whisperBubbleView = whisperBubbleView
 return exports;
 })({});

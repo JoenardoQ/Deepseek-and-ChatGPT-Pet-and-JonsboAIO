@@ -1,0 +1,88 @@
+{
+  "core": {
+    "removedPixels": 99975,
+    "opaquePixels": 614385,
+    "interiorRgbUnchanged": true,
+    "remainingComponents": [
+      94862,
+      90223,
+      89774,
+      86864,
+      86827,
+      85270,
+      84468,
+      79073,
+      2326,
+      1,
+      1
+    ]
+  },
+  "daily": {
+    "removedPixels": 102351,
+    "opaquePixels": 631740,
+    "interiorRgbUnchanged": true,
+    "remainingComponents": [
+      102046,
+      95703,
+      91693,
+      91211,
+      90295,
+      88512,
+      82083,
+      80152,
+      3,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "activity": {
+    "removedPixels": 99934,
+    "opaquePixels": 625467,
+    "interiorRgbUnchanged": true,
+    "remainingComponents": [
+      101989,
+      97890,
+      94400,
+      93159,
+      91488,
+      88238,
+      87836,
+      80937,
+      7,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "scenes": {
+    "removedPixels": 104490,
+    "opaquePixels": 703027,
+    "interiorRgbUnchanged": true,
+    "remainingComponents": [
+      102621,
+      102076,
+      101553,
+      101342,
+      100925,
+      99720,
+      97699,
+      92359,
+      5965,
+      3877,
+      33,
+      4,
+      2,
+      1,
+      1,
+      1
+    ]
+  }
+}

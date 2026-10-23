@@ -40,9 +40,9 @@ export interface MenuLeaf {
     | 'chat'
     | 'home'
     | 'reload'
-    | 'skin-whale'
-    | 'skin-fish'
-    | 'skin-chatgpt'
+    | `skin-${string}`
+    | `duet-${string}`
+    | 'pet-close'
     | 'size-up'
     | 'size-down'
     | 'size-reset';

@@ -26,5 +26,6 @@ export * from './tooltip'; // 悬浮提示（替代原生 title 属性：class +
 
 export * from './characters';
 export * from './size';
-export * from './gif-player';
+export * from './image-pose-player';
+export * from './pet-pack';
 export * from './duets';

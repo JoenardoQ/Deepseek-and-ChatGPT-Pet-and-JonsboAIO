@@ -1,4 +1,4 @@
-// Export only this pet's video frames, never the desktop or other application content.
+// Export only this pet's rendered frames, never the desktop or other application content.
 (() => {
   if (!window.jonsboBridge) return;
   const canvas = document.createElement('canvas');
@@ -42,7 +42,7 @@
       const reply = await window.jonsboBridge.presence({
         petId: pet.pet?.id,
         name: pet.pet?.name,
-        ready: !!pet.gifPlayer?.ready || [pet.videoA, pet.videoB].some((v) => v?.readyState >= 2),
+        ready: !!pet.imagePlayer?.ready || [pet.videoA, pet.videoB].some((v) => v?.readyState >= 2),
         character: pet.character,
         error: window.__jonsboDebug?.error || null,
       });
@@ -80,7 +80,7 @@
       if (
         !capture.enabled ||
         !pet ||
-        (!pet.gifPlayer?.ready && ![pet.videoA, pet.videoB].some((v) => v.readyState >= 2))
+        (!pet.imagePlayer?.ready && ![pet.videoA, pet.videoB].some((v) => v.readyState >= 2))
       )
         return;
       canvas.width = 480; // Reset drawing state (and recover from a previously tainted frame).
@@ -101,8 +101,16 @@
         ctx.fillStyle = shade;
         ctx.fillRect(0, 400, 480, 80);
       }
-      if (pet.gifPlayer?.ready) ctx.drawImage(pet.gifPlayer.canvas, 0, 151, 480, 270);
-      for (const v of pet.gifPlayer?.ready ? [] : [pet.videoA, pet.videoB]) {
+      if (pet.imagePlayer?.ready) {
+        const style = getComputedStyle(pet.imagePlayer.canvas);
+        const matrix = new DOMMatrix(style.transform === 'none' ? undefined : style.transform);
+        ctx.save();
+        ctx.translate(240, 421);
+        ctx.scale(matrix.a, matrix.d);
+        ctx.drawImage(pet.imagePlayer.canvas, -240, -270, 480, 270);
+        ctx.restore();
+      }
+      for (const v of pet.imagePlayer?.ready ? [] : [pet.videoA, pet.videoB]) {
         if (v.readyState < 2) continue;
         const style = getComputedStyle(v);
         const opacity = Number(style.opacity);

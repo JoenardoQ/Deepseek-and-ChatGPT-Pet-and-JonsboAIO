@@ -1,6 +1,6 @@
 {
   "name": "dsh-pet",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "type": "module",
   "license": "MIT",
   "engines": {
@@ -62,11 +62,11 @@
   "scripts": {
     "build": "npm --prefix dsh-pet ci --ignore-scripts --legacy-peer-deps && npm --prefix dsh-pet run build",
     "pet": "node dsh-pet/bridge/cli.mjs",
-    "test:jonsbo": "node --test dsh-pet/test-jonsbo/*.test.mjs",
+    "test:jonsbo": "node --import ./scripts/test-environment.mjs --test dsh-pet/test-jonsbo/*.test.mjs",
     "build:windows-lite": "node scripts/build-windows-lite.mjs",
-    "test:workflow": "node --test test/*.test.mjs",
+    "test:workflow": "node --import ./scripts/test-environment.mjs --test test/*.test.mjs",
     "sync:characters": "node scripts/sync-character-metadata.mjs",
-    "test:gif": "node scripts/test-gif-playback.mjs all"
+    "test:render": "node scripts/test-screen-frames.mjs"
   },
   "files": [
     "dsh-pet/lib",

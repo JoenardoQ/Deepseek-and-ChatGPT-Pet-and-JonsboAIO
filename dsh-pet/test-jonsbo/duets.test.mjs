@@ -68,3 +68,26 @@ test('new host cannot steal current projection; explicit handoff and expiry work
   s.put('dsh', { character: 'fish' });
   assert.equal(s.current().source, 'dsh');
 });
+
+test('new character pairs and scene durations come from the catalog', () => {
+  let now = 0;
+  const sources = new Sources(() => now);
+  const duets = new Duets({
+    now: () => now,
+    catalog: [
+      { id: 'greet', participants: ['future-pet', 'whale'], durationMs: 1200 },
+      { id: 'rest', participants: ['future-pet', 'whale'], durationMs: 2300 },
+    ],
+  });
+  const snapshot = () => {
+    sources.touch('dsh', { instanceId: 'future', character: 'future-pet', desktop: true });
+    sources.touch('chatgpt', { instanceId: 'whale', character: 'whale', desktop: true });
+    return duets.snapshot(sources, { visible: true, desktop: true });
+  };
+  assert.equal(snapshot().action, 'greet');
+  now = 1200;
+  assert.equal(snapshot().action, 'rest');
+  now = 3500;
+  assert.equal(snapshot().action, 'greet');
+  assert.equal(snapshot().participants.dsh.key, 'dsh:future');
+});

@@ -74,3 +74,6 @@ dsh-pet/desktop/bin/*.exe
 dsh-pet/assets/preview/
 
 .archive/
+
+# Independent desktop-only repository (maintained and committed separately).
+/desktop-pet/

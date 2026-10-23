@@ -1,34 +1,130 @@
 [
   {
     "id": "boxing",
-    "label": "拳击"
+    "label": "拳击",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 0
+    }
   },
   {
     "id": "volleyball",
-    "label": "排球"
+    "label": "排球",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 1
+    }
   },
   {
     "id": "running",
-    "label": "赛跑"
+    "label": "赛跑",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 2
+    }
   },
   {
     "id": "shopping",
-    "label": "逛街"
+    "label": "逛街",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 3
+    }
   },
   {
     "id": "sunset",
-    "label": "看日落"
+    "label": "看日落",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 4
+    }
   },
   {
     "id": "gardening",
-    "label": "浇花"
+    "label": "浇花",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 5
+    }
   },
   {
     "id": "gaming",
-    "label": "格斗游戏比赛"
+    "label": "格斗游戏比赛",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 6
+    }
   },
   {
     "id": "cafe",
-    "label": "咖啡厅看书"
+    "label": "咖啡厅看书",
+    "participants": [
+      "fish",
+      "chatgpt"
+    ],
+    "file": "images/scenes.png",
+    "kind": "image",
+    "durationMs": 9000,
+    "cell": {
+      "columns": 4,
+      "rows": 2,
+      "index": 7
+    }
   }
 ]

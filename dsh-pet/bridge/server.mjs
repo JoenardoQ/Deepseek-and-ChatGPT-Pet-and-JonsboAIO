@@ -4,7 +4,7 @@ import { BUILD_VERSION, PROTOCOL_VERSION, BRIDGE_REVISION } from './version.mjs'
 import { randomUUID } from 'node:crypto';
 import http from 'node:http';
 import { spawn } from 'node:child_process';
-import { mkdirSync, existsSync, writeFileSync, readFileSync, renameSync } from 'node:fs';
+import { mkdirSync, existsSync, writeFileSync, readFileSync, renameSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { Duets } from './duets.mjs';
@@ -14,6 +14,11 @@ import { HostLeases } from './plugin-lifetime.mjs';
 import { root, port, dataDir, config, pythonCommand, nodeCommand, dshHome, electronPath } from './runtime.mjs';
 
 export function createBridge({ launch = true } = {}) {
+  const roles = Object.fromEntries(
+    readdirSync(path.join(root, 'assets/pets'))
+      .filter((id) => existsSync(path.join(root, 'assets/pets', id, 'pet.json')))
+      .map((id) => [id, JSON.parse(readFileSync(path.join(root, 'assets/pets', id, 'pet.json'), 'utf8')).label]),
+  );
   const sources = new Sources();
   const projection = new Projection(sources);
   let lastGeneration = -1,
@@ -62,6 +67,8 @@ export function createBridge({ launch = true } = {}) {
     currentControl();
     return {
       service: 'dsh-pet-jonsbo',
+      roles,
+      scenes: duets.catalog.map(({ id, label }) => ({ id, label })),
       appearance: appearance.snapshot(),
       backgrounds: BACKGROUNDS,
       shuttingDown: shuttingDown || lifecycleClosing,
@@ -423,7 +430,7 @@ export function createBridge({ launch = true } = {}) {
         if (
           !value ||
           !['dsh', 'chatgpt'].includes(value.source) ||
-          !['fish', 'whale', 'chatgpt'].includes(value.character) ||
+          !Object.hasOwn(roles, value.character) ||
           (value.ready !== undefined && typeof value.ready !== 'boolean') ||
           (value.name !== undefined && (typeof value.name !== 'string' || value.name.length > 80)) ||
           typeof value.desktop !== 'boolean' ||
@@ -461,7 +468,7 @@ export function createBridge({ launch = true } = {}) {
           instanceId: value.instanceId,
           png: value.png,
           animation: value.animation,
-          character: ['fish', 'whale', 'chatgpt'].includes(value.character) ? value.character : null,
+          character: Object.hasOwn(roles, value.character) ? value.character : null,
         });
         if (value.source === 'dsh') dshSeen = true;
         if (!worker && output.worker === 'stopped' && output.exitCode === undefined) startWorker();
@@ -477,7 +484,7 @@ export function createBridge({ launch = true } = {}) {
         } else {
           if (!before.visible) startPet();
           if (output.worker === 'stopped' || output.worker === 'error') {
-            output = { worker: 'stopped', usb: 'not-started' };
+            output = { worker: 'stopped', usb: cfg.usb === false ? 'disabled' : 'not-started' };
             startWorker();
           }
         }

@@ -25,7 +25,7 @@ test('all three characters retain menu actions, invalid saved IDs recover, and s
       const media = S.characterMedia(id, name);
       const parts = new URL(media.path, 'http://127.0.0.1').pathname.split('/');
       const role = parts[2].startsWith('@') ? parts[2].slice(1) : 'fish';
-      const folder = media.kind === 'gif' ? 'gif' : 'webm';
+      const folder = media.kind === 'image' ? 'images' : 'webm';
       assert.ok(
         fs.existsSync(
           new URL('../assets/pets/' + role + '/' + folder + '/' + decodeURIComponent(parts[3]), import.meta.url),

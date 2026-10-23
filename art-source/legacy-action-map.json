@@ -1,0 +1,537 @@
+[
+  {
+    "oldId": "princess-001",
+    "sourceAnimation": "三球抛接",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-002",
+    "sourceAnimation": "下五子棋",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-003",
+    "sourceAnimation": "东张西望",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-004",
+    "sourceAnimation": "中秋赏月吃月饼",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-005",
+    "sourceAnimation": "优雅女仆舞",
+    "pose": "bow"
+  },
+  {
+    "oldId": "princess-006",
+    "sourceAnimation": "余额-分文不剩",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-007",
+    "sourceAnimation": "余额-数金皱眉",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-008",
+    "sourceAnimation": "余额-袋空如洗",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-009",
+    "sourceAnimation": "余额-金袋叮当",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-010",
+    "sourceAnimation": "余额-钱袋如常",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-011",
+    "sourceAnimation": "余额-钱袋满溢",
+    "pose": "balance"
+  },
+  {
+    "oldId": "princess-012",
+    "sourceAnimation": "偷吃零食被抓住",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-013",
+    "sourceAnimation": "写代码",
+    "pose": "working"
+  },
+  {
+    "oldId": "princess-014",
+    "sourceAnimation": "写福字",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-015",
+    "sourceAnimation": "凭空生花",
+    "pose": "garden"
+  },
+  {
+    "oldId": "princess-016",
+    "sourceAnimation": "动物环绕",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-017",
+    "sourceAnimation": "原地专心玩魔方",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-018",
+    "sourceAnimation": "原地小憩沉眠",
+    "pose": "sleeping"
+  },
+  {
+    "oldId": "princess-019",
+    "sourceAnimation": "原地左转奔跑",
+    "pose": "run"
+  },
+  {
+    "oldId": "princess-020",
+    "sourceAnimation": "原地敲击桌面互动",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-021",
+    "sourceAnimation": "原地漂浮踏步",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-022",
+    "sourceAnimation": "原地跳跃抓碎头顶物品",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-023",
+    "sourceAnimation": "原地蹲下玩玩具汽车",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-024",
+    "sourceAnimation": "原地重力下蹲压缩",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-025",
+    "sourceAnimation": "变鸽子",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-026",
+    "sourceAnimation": "可爱宅舞",
+    "pose": "bow"
+  },
+  {
+    "oldId": "princess-027",
+    "sourceAnimation": "吃Token",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-028",
+    "sourceAnimation": "吃冰淇淋融化",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-029",
+    "sourceAnimation": "吃午餐",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-030",
+    "sourceAnimation": "吃大闸蟹",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-031",
+    "sourceAnimation": "吃年糕",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-032",
+    "sourceAnimation": "吃早餐",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-033",
+    "sourceAnimation": "吃晚餐",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-034",
+    "sourceAnimation": "吃汤圆",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-035",
+    "sourceAnimation": "吃白饭",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-036",
+    "sourceAnimation": "吃粽子",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-037",
+    "sourceAnimation": "吃糖葫芦",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-038",
+    "sourceAnimation": "吃腊八粥",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-039",
+    "sourceAnimation": "吃西瓜",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-040",
+    "sourceAnimation": "吃重阳糕",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-041",
+    "sourceAnimation": "吃长寿面",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-042",
+    "sourceAnimation": "吃青团",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-043",
+    "sourceAnimation": "吃饺子",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-044",
+    "sourceAnimation": "吹气球",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-045",
+    "sourceAnimation": "吹笛子",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-046",
+    "sourceAnimation": "哈欠连天",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-047",
+    "sourceAnimation": "堆雪人",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-048",
+    "sourceAnimation": "大口吃零食",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-049",
+    "sourceAnimation": "女仆屈膝礼仪",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-050",
+    "sourceAnimation": "小幅度原地360度旋转展示",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-051",
+    "sourceAnimation": "小提琴演奏",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-052",
+    "sourceAnimation": "工作状态-原地踱步张望",
+    "pose": "thinking"
+  },
+  {
+    "oldId": "princess-053",
+    "sourceAnimation": "工作状态-垂头叹气冒汗",
+    "pose": "error"
+  },
+  {
+    "oldId": "princess-054",
+    "sourceAnimation": "工作状态-忙碌点按",
+    "pose": "working"
+  },
+  {
+    "oldId": "princess-055",
+    "sourceAnimation": "工作状态-思考冒泡",
+    "pose": "thinking"
+  },
+  {
+    "oldId": "princess-056",
+    "sourceAnimation": "工作状态-清点归档",
+    "pose": "review"
+  },
+  {
+    "oldId": "princess-057",
+    "sourceAnimation": "工作状态-雀跃庆祝",
+    "pose": "success"
+  },
+  {
+    "oldId": "princess-058",
+    "sourceAnimation": "待机呼吸休闲",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-059",
+    "sourceAnimation": "悠闲哼歌",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-060",
+    "sourceAnimation": "扑克魔术",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-061",
+    "sourceAnimation": "打瞌睡被惊醒",
+    "pose": "sleeping"
+  },
+  {
+    "oldId": "princess-062",
+    "sourceAnimation": "抽陀螺",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-063",
+    "sourceAnimation": "拆礼物",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-064",
+    "sourceAnimation": "插茱萸赏菊",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-065",
+    "sourceAnimation": "摇扇纳凉",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-066",
+    "sourceAnimation": "撸猫",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-067",
+    "sourceAnimation": "收红包",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-068",
+    "sourceAnimation": "放孔明灯",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-069",
+    "sourceAnimation": "放河灯",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-070",
+    "sourceAnimation": "放烟花",
+    "pose": "garden"
+  },
+  {
+    "oldId": "princess-071",
+    "sourceAnimation": "放风筝",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-072",
+    "sourceAnimation": "整体换装试色",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-073",
+    "sourceAnimation": "是啊，吃什么",
+    "pose": "snack"
+  },
+  {
+    "oldId": "princess-074",
+    "sourceAnimation": "晨间刷牙",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-075",
+    "sourceAnimation": "涮火锅",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-076",
+    "sourceAnimation": "深度思考碎碎念",
+    "pose": "thinking"
+  },
+  {
+    "oldId": "princess-077",
+    "sourceAnimation": "点击回应-傲娇生气",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-078",
+    "sourceAnimation": "点击回应-元气挥手",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-079",
+    "sourceAnimation": "点击回应-害羞惊讶",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-080",
+    "sourceAnimation": "点击回应-开心跃动",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-081",
+    "sourceAnimation": "点击回应-挠痒咯咯笑",
+    "pose": "wave"
+  },
+  {
+    "oldId": "princess-082",
+    "sourceAnimation": "照镜子",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-083",
+    "sourceAnimation": "玩水枪",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-084",
+    "sourceAnimation": "玩游戏气急败坏",
+    "pose": "play"
+  },
+  {
+    "oldId": "princess-085",
+    "sourceAnimation": "用鲸鱼尾巴拍打地面",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-086",
+    "sourceAnimation": "碎碎念-发呆碎碎念",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-087",
+    "sourceAnimation": "碎碎念-对屏碎碎念",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-088",
+    "sourceAnimation": "碎碎念-擦桌碎碎念",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-089",
+    "sourceAnimation": "穿针乞巧",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-090",
+    "sourceAnimation": "舞狮头",
+    "pose": "bow"
+  },
+  {
+    "oldId": "princess-091",
+    "sourceAnimation": "荡秋千",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-092",
+    "sourceAnimation": "萌化小幽灵",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-093",
+    "sourceAnimation": "蓝鲸现世",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-094",
+    "sourceAnimation": "蝴蝶蜜蜂环绕头顶开花",
+    "pose": "garden"
+  },
+  {
+    "oldId": "princess-095",
+    "sourceAnimation": "螃蟹走路",
+    "pose": "walk"
+  },
+  {
+    "oldId": "princess-096",
+    "sourceAnimation": "被吓一跳",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-097",
+    "sourceAnimation": "被落叶淹没",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-098",
+    "sourceAnimation": "被鼠标拖拽悬空反馈",
+    "pose": "drag"
+  },
+  {
+    "oldId": "princess-099",
+    "sourceAnimation": "装点圣诞树",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-100",
+    "sourceAnimation": "讨糖南瓜灯",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-101",
+    "sourceAnimation": "超大伸懒腰",
+    "pose": "stretch"
+  },
+  {
+    "oldId": "princess-102",
+    "sourceAnimation": "踢毽子",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-103",
+    "sourceAnimation": "轻快摇摆舞",
+    "pose": "bow"
+  },
+  {
+    "oldId": "princess-104",
+    "sourceAnimation": "轻快记录",
+    "pose": "review"
+  },
+  {
+    "oldId": "princess-105",
+    "sourceAnimation": "骑木马",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-106",
+    "sourceAnimation": "鲸鱼吐泡泡特效",
+    "pose": "idle"
+  },
+  {
+    "oldId": "princess-107",
+    "sourceAnimation": "blink",
+    "pose": "blink"
+  }
+]

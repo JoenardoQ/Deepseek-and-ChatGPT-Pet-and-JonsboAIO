@@ -60,6 +60,7 @@
  * TODO(类型)：peer 依赖类型包本地暂不可解析，ctx/req/res 暂用 any；
  *             依赖可解析后替换为 DSH 官方类型。
  */
+import { hasPetPack, getPetPack } from '../shared/pet-pack';
 import { createReadStream, existsSync, fstatSync, readFileSync } from 'node:fs';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -296,7 +297,7 @@ export function apply(ctx: any): void {
    * rest.split('/') 切开，直接 join 会让 `..\..\x` 逃出用户根读盘（与 /thumb 同一道防线）。
    */
   const memeDirsFor = (assetRoot: string): string[] => {
-    if (assetRoot === '@chatgpt' || assetRoot === '@whale')
+    if (assetRoot.startsWith('@') && hasPetPack(assetRoot.slice(1)))
       return [join(PACKAGE_ROOT_ASSETS, 'pets', assetRoot.slice(1), 'memes')];
     const own = resolveAsset(petConfigDir, assetRoot + '-memes');
     if (own !== undefined && existsSync(own)) return [own];
@@ -1297,11 +1298,13 @@ export function apply(ctx: any): void {
     }
     const fileName = nameParts.join('/');
     const ext = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
-    if (['@chatgpt', '@whale', '@fish', '@duo'].includes(petId)) {
-      if (!['.gif', '.webm'].includes(ext) || nameParts.length !== 1)
+    if (petId === '@duo' || (petId.startsWith('@') && hasPetPack(petId.slice(1)))) {
+      if (!['.png', '.webp', '.webm'].includes(ext) || nameParts.length !== 1)
         return { kind: 'text', status: 400, body: 'Unsupported role asset' };
       const role = petId.slice(1);
-      const folder = ext === '.gif' ? 'gif' : 'webm';
+      const folder = ext === '.webm' ? 'webm' : 'images';
+      if (role !== 'duo' && !getPetPack(role).actions.some((a) => a.file === folder + '/' + fileName))
+        return { kind: 'text', status: 404, body: 'Undeclared pack asset' };
       const owned = resolveExisting(join(PACKAGE_ROOT_ASSETS, 'pets', role, folder), fileName);
       if (!owned) return { kind: 'text', status: 404, body: 'Character asset not found' };
       return { kind: 'file', file: owned, contentType: MIME[ext] ?? 'image/webp' };

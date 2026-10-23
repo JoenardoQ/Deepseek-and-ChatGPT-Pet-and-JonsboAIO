@@ -172,7 +172,7 @@ class Rpc {
   }
   async initialize(): Promise<void> {
     await this.request('initialize', {
-      clientInfo: { name: 'pet_trio_jonsbo', title: '桌宠宿主连接', version: '1.1.2' },
+      clientInfo: { name: 'pet_trio_jonsbo', title: '桌宠宿主连接', version: '1.2.0' },
       capabilities: { experimentalApi: true },
     });
     this.child.stdin.write('{"method":"initialized"}\n');

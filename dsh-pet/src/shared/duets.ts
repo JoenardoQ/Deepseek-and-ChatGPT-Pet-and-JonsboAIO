@@ -1,5 +1,6 @@
 import type { MenuNode, MenuLeaf } from './menu';
 import scenes from '../../assets/pets/duo/actions.json' with { type: 'json' };
+export const DUET_SCENES = scenes;
 export const DUET_ACTIONS = scenes.map(({ id, label }) => [id, label] as const);
 export function duetMenu(): MenuNode {
   return {

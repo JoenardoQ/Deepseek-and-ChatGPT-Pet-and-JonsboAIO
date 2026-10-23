@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-23",
+  "reason": "User requested removal of obsolete scaffolding, historical code and unused resources after the static-image migration.",
+  "removedFiles": 335,
+  "groups": [
+    "superseded ChatGPT and duo keyframes/proofs/source sheets",
+    "old 1.0.1 GIF and illustration duplicates",
+    "retired GIF generation/export/playback tools",
+    "obsolete upstream step01-step04 video conversion scaffolding and preview encoder"
+  ],
+  "preserved": [
+    "394 upstream media/font inventory entries",
+    "current DeepSeek clips and dialogue illustrations",
+    "user reference images",
+    "current action plans, prompts, cleanup script, hashes and validation tests"
+  ],
+  "runtimeGifRemoval": "115 old ChatGPT/duo GIF assets removed separately",
+  "history": "Existing Git history is not rewritten.",
+  "deletedTrackedFiles": 466,
+  "deletedTrackedBytes": 1277181063,
+  "deletedTrackedMiB": 1218
+}

@@ -6,18 +6,19 @@ import vm from 'node:vm';
 const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(new URL('../runtime/electron-helper/shared-core.js', import.meta.url), 'utf8'), ctx);
 const S = ctx.PetShared;
-test('new GIF actions, original blue maid clips and role-owned illustrations remain distinct', () => {
+test('static image actions, original blue maid clips and role-owned illustrations remain distinct', () => {
   for (const role of ['chatgpt', 'duo']) {
     const dir = new URL('../assets/pets/' + role + '/', import.meta.url);
-    const meta = JSON.parse(fs.readFileSync(new URL('animation-generation.json', dir)));
-    assert.equal(meta.length, role === 'chatgpt' ? 107 : 8);
-    for (const asset of meta) {
-      assert.equal(asset.frames, 216);
-      assert.equal(asset.durationMs, 9000);
-      assert.equal(asset.frames, asset.uniqueFrames);
-      assert.ok(asset.bytes > 10000);
-      assert.match(asset.file, /\.gif$/);
+    const actions = JSON.parse(fs.readFileSync(new URL('actions.json', dir)));
+    assert.equal(actions.length, role === 'chatgpt' ? 24 : 8);
+    for (const asset of actions) {
+      assert.equal(asset.kind, 'image');
+      assert.match(asset.file, /\.png$/);
+      const bytes = fs.readFileSync(new URL(asset.file, dir));
+      assert.equal(bytes.toString('hex', 0, 8), '89504e470d0a1a0a');
+      assert.equal(bytes[25], 6);
     }
+    assert.equal(fs.existsSync(new URL('gif/', dir)), false);
   }
   assert.equal(
     fs.readdirSync(new URL('../assets/pets/fish/webm/', import.meta.url)).filter((p) => p.endsWith('.webm')).length,

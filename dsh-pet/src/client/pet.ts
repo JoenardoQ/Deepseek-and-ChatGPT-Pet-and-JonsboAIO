@@ -28,7 +28,7 @@ import {
   characterActionMenu,
   type CharacterId,
 } from '../shared/characters';
-import { GifPlayer } from '../shared/gif-player';
+import { ImagePosePlayer } from '../shared/image-pose-player';
 import { flattenConfigPets, isWebVisible } from '../shared/config';
 import { balanceEventIndex, balancePercent, decideBalanceNotice, type BalanceState } from '../shared/balance';
 // 轮询统一状态 S：前端唯一的数据来源与渲染入口（拉取 / 拍平 / 比对都在 shared，两端同一份）
@@ -249,7 +249,7 @@ export function makePetUI(rt: {
     const stageRef = useRef<HTMLDivElement | null>(null);
     const videoARef = useRef<HTMLVideoElement | null>(null);
     const videoBRef = useRef<HTMLVideoElement | null>(null);
-    const gifRef = useRef<GifPlayer | null>(null);
+    const imageRef = useRef<ImagePosePlayer | null>(null);
     const frontRef = useRef(0);
     const pendingRef = useRef<null | { anim: string; once: boolean; gen: number }>(null);
     const genRef = useRef(0);
@@ -327,8 +327,8 @@ export function makePetUI(rt: {
       }
       const media = characterMedia(character, next, cfg.assetRoot ?? cfg.id, THUMB_EXT);
       const assetUrl = '/dsh-pet-7340' + media.path;
-      if (media.kind === 'gif' && stageRef.current) {
-        gifRef.current ??= new GifPlayer(stageRef.current);
+      if (media.kind === 'image' && stageRef.current) {
+        imageRef.current ??= new ImagePosePlayer(stageRef.current);
         for (const video of [videoARef.current, videoBRef.current]) {
           if (video) {
             video.onended = null;
@@ -336,12 +336,19 @@ export function makePetUI(rt: {
             video.classList.remove('is-front');
           }
         }
-        pendingSquashRef.current = false;
-        pendingMoveRef.current = null;
-        gifRef.current
-          .play(assetUrl, nextOnce, handleEnded)
+
+        imageRef.current
+          .play(assetUrl, nextOnce, handleEnded, media.cell, media.durationMs)
           .then(() => {
-            if (genRef.current === gen) pendingRef.current = null;
+            if (genRef.current === gen && imageRef.current) {
+              pendingRef.current = null;
+              imageRef.current.canvas.style.transform = facingRef.current === 'right' ? 'scaleX(-1)' : '';
+              if (pendingMoveRef.current) startMoveDrive(imageRef.current);
+              if (pendingSquashRef.current) {
+                pendingSquashRef.current = false;
+                startSquash(imageRef.current.canvas);
+              }
+            }
           })
           .catch((error: Error) => {
             if (genRef.current === gen) {
@@ -351,7 +358,7 @@ export function makePetUI(rt: {
           });
         return;
       }
-      gifRef.current?.stop();
+      imageRef.current?.stop();
       el.loop = !nextOnce;
       el.muted = true;
       el.autoplay = true;
@@ -439,8 +446,8 @@ export function makePetUI(rt: {
       const inflight = inflightRef.current;
       return () => {
         mountedRef.current = false;
-        gifRef.current?.dispose();
-        gifRef.current = null;
+        imageRef.current?.dispose();
+        imageRef.current = null;
         for (const c of inflight) c.abort();
         inflight.length = 0;
         stopMove();
@@ -566,7 +573,7 @@ export function makePetUI(rt: {
         if (poolIncludes(petAnims.events?.workStatus ?? [], animRef.current)) {
           const front = frontRef.current === 0 ? videoARef.current : videoBRef.current;
           if (front) {
-            gifRef.current?.finishLoop();
+            imageRef.current?.finishLoop();
             front.loop = false;
             front.onended = handleEnded;
           }
@@ -882,7 +889,7 @@ export function makePetUI(rt: {
       return window.innerHeight - 20 - halfH;
     };
 
-    const startMoveDrive = (el: HTMLVideoElement) => {
+    const startMoveDrive = (el: Pick<HTMLVideoElement, 'duration' | 'currentTime'>) => {
       const pm = pendingMoveRef.current;
       if (!pm || moveRef.current !== null) return;
       pendingMoveRef.current = null;
@@ -1144,7 +1151,7 @@ export function makePetUI(rt: {
     /** Q 弹挤压：前台视频垂直压扁（贴地锚定，transform-origin:bottom）再回弹；
      *  与桌面同构，曲线在 shared（squashScale）。depth = 下压幅度（点击固定 0.55；
      *  落地按冲击速度 landingSquash 动态取）。reduce-motion 时跳过。 */
-    const startSquash = (el: HTMLVideoElement, depth: number = SQ_SQUASH) => {
+    const startSquash = (el: HTMLElement, depth: number = SQ_SQUASH) => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const token = ++squashTokenRef.current;
       if (squashRef.current !== null) cancelAnimationFrame(squashRef.current);
