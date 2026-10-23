@@ -5,6 +5,7 @@ import os from "node:os";
 import crypto from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { runTar } from "./archive-tools.mjs";
 const root = fileURLToPath(new URL("../", import.meta.url));
 const profile = JSON.parse(
   fs.readFileSync(path.join(root, "scripts/windows-launcher.json")),
@@ -127,13 +128,7 @@ fs.writeFileSync(
 const tarball = path.join(dist, profile.artifact.replace(/\.zip$/, ".tgz"));
 const packageFolder = path.join(stage, "package");
 fs.renameSync(folder, packageFolder);
-const packed = spawnSync("tar", ["-czf", tarball, "-C", stage, "package"], {
-  windowsHide: true,
-  encoding: "utf8",
-  timeout: 120000,
-});
-if (packed.status !== 0)
-  throw Error(packed.stderr || "DSH tarball build failed");
+runTar(["-czf", tarball, "package"], { cwd: stage });
 const tarHash = crypto
   .createHash("sha256")
   .update(fs.readFileSync(tarball))
